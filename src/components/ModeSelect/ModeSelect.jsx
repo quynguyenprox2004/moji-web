@@ -46,21 +46,3 @@ function ModeSelect() {
 }
 
 export default ModeSelect
-
-// function ModeToggle() {
-//   const { mode, setMode } = useColorScheme()
-//   // const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-//   // const prefersLightMode = useMediaQuery('(prefers-color-scheme: light)')
-//   // console.log('prefersDarkMode: ', prefersDarkMode)
-//   // console.log('prefersLightMode: ', prefersLightMode)
-
-//   return (
-//     <Button
-//       onClick={() => {
-//         setMode(mode === 'light' ? 'dark' : 'light')
-//       }}
-//     >
-//       {mode === 'light' ? 'Turn dark' : 'Turn light'}
-//     </Button>
-//   )
-// }
