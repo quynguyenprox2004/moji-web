@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { ReactComponent as MojiIcon } from '../../assets/trello.svg'
+import { ReactComponent as MojiIcon } from '~/assets/trello.svg'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
