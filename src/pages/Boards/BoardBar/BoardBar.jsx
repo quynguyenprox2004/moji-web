@@ -8,7 +8,7 @@ function BoardBar() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
+      backgroundColor: 'background.boardBar'
     }}>
       BoardBar
     </Box>

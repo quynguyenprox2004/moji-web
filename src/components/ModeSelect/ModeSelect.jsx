@@ -16,7 +16,27 @@ function ModeSelect() {
   }
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+    <FormControl
+      sx={{
+        m: 1,
+        minWidth: 120,
+        // 1. Đồng bộ màu cho Label (chữ "Mode" phía trên)
+        '& .MuiInputLabel-root': { color: 'text.primary' },
+        '& .MuiInputLabel-root.Mui-focused': { color: 'text.primary' },
+
+        // 2. Đồng bộ màu cho chữ bên trong ô Select và icon mũi tên xổ xuống
+        '& .MuiSelect-select': { color: 'text.primary' },
+        '& .MuiSelect-icon': { color: 'text.primary' },
+
+        // 3. Đồng bộ màu viền (fieldset) tương tự ô Search của bạn
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': { borderColor: 'text.primary' }, // Viền mờ nhẹ hài hòa với nút Create
+          '&:hover fieldset': { borderColor: 'text.primary' },
+          '&.Mui-focused fieldset': { borderColor: 'text.primary' }
+        }
+      }}
+      size="small"
+    >
       <InputLabel id="label-select-dark-light-mode">Mode</InputLabel>
       <Select
         labelId="label-select-dark-light-mode"
@@ -26,18 +46,21 @@ function ModeSelect() {
         onChange={handleChange}
       >
         <MenuItem value="light">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <LightModeIcon fontSize="small" /> Light
+          {/* Gắn màu text.primary cho Box và Icon để đồng bộ hoàn toàn */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary' }}>
+            <LightModeIcon fontSize="small" sx={{ color: 'text.primary' }} /> Light
           </Box>
         </MenuItem>
+
         <MenuItem value="dark">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <DarkModeOutlinedIcon fontSize="small" /> Dark
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary' }}>
+            <DarkModeOutlinedIcon fontSize="small" sx={{ color: 'text.primary' }} /> Dark
           </Box>
         </MenuItem>
+
         <MenuItem value="system">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <SettingsBrightnessIcon fontSize="small" /> System
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'text.primary' }}>
+            <SettingsBrightnessIcon fontSize="small" sx={{ color: 'text.primary' }} />System
           </Box>
         </MenuItem>
       </Select>
