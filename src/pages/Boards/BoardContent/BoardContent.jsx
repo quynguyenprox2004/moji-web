@@ -5,7 +5,7 @@ function BoardContent() {
     <Box sx={{
       width: '100%',
       height: (theme) => theme.moji.boardContentHeight,
-      bgcolor: (theme) => (theme.palette.mode === 'dark' ? '#34495e' : '#1976d2')
+      backgroundColor: 'background.default'
     }}>
       Board Content
     </Box>
