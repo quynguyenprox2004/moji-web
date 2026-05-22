@@ -137,12 +137,14 @@ function PrimarySearchAppBar() {
     <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static"
         sx={{
+          width: '100%',
+          height: (theme) => theme.moji.appBarHeight,
           backgroundColor: 'background.appBar',
           color: 'text.primary',
           borderBottom: '1px solid rgb(23, 43, 77, 0.16)'
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ minHeight: '100% !important', px: '12px !important' }}>
           <SvgIcon component={MojiIcon} fontSize="medium" inheritViewBox
             sx={{
               mr: 0.5
