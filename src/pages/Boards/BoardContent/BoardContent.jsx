@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 
-function BoardContent() {
+function BoardContent({ board }) {
   return (
     <Box sx={{
       width: '100%',
@@ -21,7 +21,7 @@ function BoardContent() {
       // Tránh việc người dùng đang vuốt các Column Trello thì vô tình làm load lại trang web
       overscrollBehavior: 'contain'
     }}>
-      <ListColumns />
+      <ListColumns columns={board?.columns} />
     </Box>
   )
 }

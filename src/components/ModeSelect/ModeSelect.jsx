@@ -18,7 +18,7 @@ function ModeSelect() {
   return (
     <FormControl
       sx={{
-        m: 1,
+        my: 1,
         minWidth: 120,
         // 1. Đồng bộ màu cho Label (chữ "Mode" phía trên)
         '& .MuiInputLabel-root': { color: 'text.primary' },

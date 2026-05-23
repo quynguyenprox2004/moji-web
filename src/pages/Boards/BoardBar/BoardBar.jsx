@@ -1,15 +1,17 @@
-import React from 'react'
+import * as React from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
+import { capitalizeFirstLetter } from '~/utils/formatters'
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import IconButton from '@mui/material/IconButton'
-import MoreIcon from '@mui/icons-material/MoreVert'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
-import RemoveIcon from '@mui/icons-material/Remove'
-import Typography from '@mui/material/Typography'
-import CloseIcon from '@mui/icons-material/Close'
+
+// Import các sub-components vừa tách
+import BoardUserGroup from './Menu/BoardUserGroup'
+import BoardInvite from './Menu/BoardInvite'
 
 const MENU_STYLES = {
   color: 'text.primary',
@@ -17,105 +19,51 @@ const MENU_STYLES = {
   fontWeight: 'bold',
   borderRadius: '4px',
   '&:hover': {
-    backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.04)'
+    backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#424E61' : '#C3CBD5'
   },
   '& .MuiChip-label': {
-    fontSize: { xs: '0.8rem', sm: '0.9rem' } // Thu nhỏ nhẹ font chữ trên mobile
+    fontSize: { xs: '0.8rem', sm: '0.9rem' }
   }
 }
 
-function BoardBar() {
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const isMenuOpen = Boolean(anchorEl)
+function BoardBar({ board }) {
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
+  const handleMobileMenuClose = () => setMobileMoreAnchorEl(null)
+  const handleMobileMenuOpen = (event) => setMobileMoreAnchorEl(event.currentTarget)
 
-  const menuId = 'primary-search-account-menu'
+  const mobileMenuId = 'primary-search-account-menu-mobile'
 
-  const renderMenu = (
+  const renderMobileMenu = (
     <Menu
-      anchorEl={anchorEl}
-      id={menuId}
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      id={mobileMenuId}
       keepMounted
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-
-      // --- KHỐI ĐỊNH VỊ: Giúp menu hiển thị ngang hàng tuyệt đối với nút bấm ---
-      anchorOrigin={{
-        vertical: 'top', // Điểm neo trên nút kích hoạt: Bắt đầu từ đỉnh nút
-        horizontal: 'right' // Căn lề phải của nút kích hoạt
-      }}
-      transformOrigin={{
-        vertical: 'top', // Điểm neo trên Menu: Khớp từ đỉnh Menu
-        horizontal: 'right' // Khớp lề phải Menu trùng lề phải nút bấm
-      }}
-
-      // Thêm một chút tùy biến đệm viền ngoài cho danh sách menu phẳng hơn
-      slotProps={{
-        paper: {
-          sx: {
-            minWidth: '200px',
-            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Đổ bóng mờ nhẹ cao cấp
-            borderRadius: '8px',
-            paddingTop: 0, // Triệt tiêu khoảng trống thừa mặc định ở đỉnh menu
-            paddingBottom: '4px',
-            // Đồng bộ màu nền menu theo theme dark/light tự động của MUI
-            backgroundColor: 'background.paper'
-          }
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+      sx={{
+        '& .MuiPaper-root': {
+          width: '240px',
+          color: 'text.primary',
+          p: 1
         }
       }}
     >
-      {/* --- THANH HEADER CỦA MENU --- */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        px: 2,
-        py: 1,
-        borderBottom: '1px solid',
+      {/* ITEM 1: TÁI SỬ DỤNG CHUNG BOARDUSERGROUP TRÊN MOBILE (Cấu hình size nhỏ hơn xíu) */}
+      <MenuItem disableRipple sx={{ bgcolor: 'transparent', '&:hover': { bgcolor: 'transparent' }, p: 0, mb: 1.5 }}>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <BoardUserGroup max={5} size={32} fontSize={14} />
+        </Box>
+      </MenuItem>
 
-        // TỐI ƯU DARKMODE: Thay grey.200 cố định bằng màu divider tự động của hệ thống theme
-        borderColor: (theme) => theme.palette.divider,
-
-        mb: 1 // Tạo khoảng cách nhẹ với các nút chức năng bên dưới
-      }}>
-        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-          Menu
-        </Typography>
-
-        <IconButton
-          size="small"
-          onClick={handleMenuClose}
-          sx={{
-            p: '4px',
-            color: 'text.primary',
-            '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.04)' }
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </Box>
-
-      {/* --- CÁC DIỆN MỤC MENUITEM --- */}
-      <MenuItem
-        onClick={handleMenuClose}
-        sx={{
-          mx: 0.5,
-          borderRadius: '4px',
-          py: 1
-        }}
-      >
-        <IconButton size="small" sx={{ mr: 1, p: 0, color: 'text.primary' }}>
-          <RemoveIcon fontSize="small" />
-        </IconButton>
-        <Typography variant="body2" sx={{ fontWeight: 'medium' }}>
-          Close board
-        </Typography>
+      {/* ITEM 2: TÁI SỬ DỤNG CHUNG BOARDINVITE TRÊN MOBILE (Bật fullWidth và size nhỏ) */}
+      <MenuItem disableRipple sx={{ bgcolor: 'transparent', '&:hover': { bgcolor: 'transparent' }, p: 0 }} onClick={handleMobileMenuClose}>
+        <Box sx={{ width: '100%' }}>
+          <BoardInvite fullWidth size="small" />
+        </Box>
       </MenuItem>
     </Menu>
   )
@@ -128,25 +76,15 @@ function BoardBar() {
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: 'background.boardBar',
-
-      // Responsive padding: Màn hình nhỏ thu hẹp lề lại một chút
       px: { xs: 1.5, sm: 2 },
       gap: 1
     }}>
-      {/* --- CỤM BÊN TRÁI: CHỨA CẢ TÊN BOARD VÀ TRẠNG THÁI PUBLIC --- */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: { xs: 0.5, sm: 1 }, // Khoảng cách giữa 2 nút thu hẹp trên mobile
-        overflow: 'hidden' // Ngăn chặn cụm này đè lấn nút Ba chấm bên phải
-      }}>
-
-        {/* Nút 1: Tên Board */}
+      {/* --- CỤM BÊN TRÁI: TÊN BOARD & TRẠNG THÁI --- */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 }, overflow: 'hidden' }}>
         <Chip
           sx={{
             ...MENU_STYLES,
-            // Xử lý text cắt dấu ba chấm thông minh nếu màn hình quá hẹp
-            maxWidth: { xs: '140px', sm: '260px', md: '100%' },
+            maxWidth: { xs: '140px', sm: '240px' },
             '& .MuiChip-label': {
               ...MENU_STYLES['& .MuiChip-label'],
               whiteSpace: 'nowrap',
@@ -154,44 +92,45 @@ function BoardBar() {
               textOverflow: 'ellipsis'
             }
           }}
-          icon={<DashboardIcon />}
-          label="CHUYÊN ĐỀ TỐT NGHIỆP"
+          icon={<DashboardIcon color='text.primary' />}
+          label={board?.title}
           clickable
         />
 
-        {/* Nút 2: Trạng thái Public/Private mới thêm */}
         <Chip
-          sx={{
-            ...MENU_STYLES,
-            // Tránh bóp nghẹt chữ "Public" trên mobile
-            minWidth: 'fit-content'
-          }}
-          icon={<VpnLockIcon />}
-          label="Public"
+          sx={{ ...MENU_STYLES, minWidth: 'fit-content' }}
+          icon={<VpnLockIcon color='text.primary' />}
+          label={capitalizeFirstLetter(board?.type)}
           clickable
         />
-
       </Box>
 
-      <IconButton
-        aria-controls={menuId}
-        aria-haspopup="true"
-        onClick={handleMenuOpen}
-        sx={{
-          borderRadius: '5px',
-          color: 'text.primary',
-          // Tăng nhẹ vùng bấm khi sử dụng ngón tay thao tác trên điện thoại
-          p: { xs: '8px', sm: '12px' },
-          '&:hover': {
-            boxShadow: 'none',
-            backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
-          }
-        }}
-      >
-        <MoreIcon />
-      </IconButton>
+      {/* --- CỤM BÊN PHẢI: DESKTOP VIEW (ẨN TRÊN XS, HIỂN THỊ TRÊN SM) --- */}
+      <Box sx={{
+        display: { xs: 'none', sm: 'flex' },
+        alignItems: 'center',
+        gap: 1
+      }}>
+        {/* Gọi gọn gàng hai Component con bằng các cấu hình tham số mặc định */}
+        <BoardUserGroup max={5} size={30} fontSize={16} />
+        <BoardInvite fullWidth={false} size="medium" />
+      </Box>
 
-      {renderMenu}
+      {/* --- CỤM BÊN PHẢI: MOBILE VIEW (CHỈ HIỂN THỊ NÚT 3 CHẤM TRÊN XS) --- */}
+      <Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center' }}>
+        <IconButton
+          size="small"
+          aria-controls={mobileMenuId}
+          aria-haspopup="true"
+          onClick={handleMobileMenuOpen}
+          sx={{ color: 'text.primary' }}
+        >
+          <MoreHorizIcon />
+        </IconButton>
+      </Box>
+
+      {/* Khối JSX Render Menu rút gọn */}
+      {renderMobileMenu}
     </Box>
   )
 }

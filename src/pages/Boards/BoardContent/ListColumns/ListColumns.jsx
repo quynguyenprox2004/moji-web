@@ -3,7 +3,7 @@ import Column from './Column/Column'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
 
-function ListColumns() {
+function ListColumns({ columns }) {
   return (
     <Box sx={{
       backgroundColor: 'inherit',
@@ -24,7 +24,8 @@ function ListColumns() {
     }}>
 
       {/* Box List Columns */}
-      <Column />
+      {columns?.map(column => <Column key={column._id} column={column} />)}
+
 
       {/* Nút thêm List mới - Đã đồng bộ kích thước Responsive với Column */}
       <Box sx={{
@@ -51,7 +52,7 @@ function ListColumns() {
             fontSize: { xs: '0.85rem', sm: '0.9rem' }, // Responsive font-size
             '&:hover': {
               boxShadow: 'none',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.24)' : 'rgba(0, 0, 0, 0.16)')
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
             }
           }}
         >
