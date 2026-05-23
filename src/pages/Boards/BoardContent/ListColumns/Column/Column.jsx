@@ -18,6 +18,7 @@ import AddCardIcon from '@mui/icons-material/AddCard'
 import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import AddIcon from '@mui/icons-material/Add'
+import IconButton from '@mui/material/IconButton'
 
 
 function Column() {
@@ -39,29 +40,44 @@ function Column() {
       {/* Box Column Header */}
       <Box sx={{
         height: (theme) => theme.moji.columnHeaderHeight,
-        p: 2,
+        p: '10px 5px',
+        mx: '5px',
+        gap: 0.5,
         display: 'flex',
-        alignContent: 'center',
-        justifyContent: 'space-between'
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        color: 'text.primary'
       }}>
-        <Typography variant="h6" sx={{
-          fontSize: '1rem',
-          color: 'text.primary',
-          fontWeight: 'bold',
-          cursor: 'pointer'
-        }}>
+        <Typography variant="h6" component="div"
+          sx={{
+            fontSize: '1rem',
+            color: 'text.primary',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            flexGrow: 1
+            // bgcolor: 'rgba(0,0,0,0.3)' // đang test
+          }}>
           Column Title
         </Typography>
         <Box>
           <Tooltip title="List actions">
-            <MoreHorizIcon
-              sx={{ color: 'text.primary', cursor: 'pointer' }}
+            <IconButton
               id="basic-column-dropdown"
               aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
-            />
+              sx={{
+                color: 'text.primary',
+                borderRadius: '5px',
+                p: '6px',
+                '&:hover': {
+                  boxShadow: 'none',
+                  backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
+                }
+              }} >
+              <MoreHorizIcon />
+            </IconButton>
           </Tooltip>
           <Menu
             id="basic-menu-column-dropdown"
@@ -106,15 +122,39 @@ function Column() {
       {/* Box Column Footer */}
       <Box sx={{
         height: (theme) => theme.moji.columnFooterHeight,
-        p: 2,
+        p: '10px 5px',
+        mx: '5px',
+        gap: 0.5,
         display: 'flex',
-        alignContent: 'center',
-        justifyContent: 'space-between',
+        alignItems: 'center',
         color: 'text.primary'
       }}>
-        <Button startIcon={<AddIcon />} sx={{ color: 'text.primary' }}>Add a card</Button>
+        <Button
+          size="medium"
+          startIcon={<AddIcon />}
+          sx={{
+            color: 'text.primary',
+            flexGrow: 1,
+            justifyContent: 'flex-start',
+            textTransform: 'none',
+            '&:hover': {
+              boxShadow: 'none',
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
+            }
+          }}>
+          Add a card
+        </Button>
         <Tooltip title="Drag to move">
-          <DragHandleIcon sx={{ cursor: 'pointer' }} />
+          <IconButton size="medium" sx={{
+            color: 'text.primary',
+            borderRadius: '5px',
+            '&:hover': {
+              boxShadow: 'none',
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
+            }
+          }} >
+            <DragHandleIcon sx={{ cursor: 'grab' }} />
+          </IconButton>
         </Tooltip>
       </Box>
     </Box>

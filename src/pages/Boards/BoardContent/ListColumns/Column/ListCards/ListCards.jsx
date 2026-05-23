@@ -16,9 +16,7 @@ function ListCards() {
         ${theme.spacing(5)} - 
         ${theme.moji.columnHeaderHeight} - 
         ${theme.moji.columnFooterHeight}
-      )`,
-      '&::-webkit-scrollbar-thumb': { backgroundColor: '#ced0da' },
-      '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#bfc2cf' }
+      )`
     }}>
       <Card />
       <Card />
