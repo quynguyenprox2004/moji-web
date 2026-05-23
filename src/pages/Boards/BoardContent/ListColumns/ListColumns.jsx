@@ -12,17 +12,29 @@ function ListColumns() {
       display: 'flex',
       overflowX: 'auto',
       overflowY: 'hidden',
-      '&::-webkit-scrollbar-track': { m: 2 }
+
+      // Tạo khoảng đệm ở cuối trang khi cuộn ngang hết cỡ (cực kỳ quan trọng trên mobile)
+      pr: { xs: 2, sm: 3 },
+
+      // Kế thừa margin-left tinh chỉnh từ file Column.jsx
+      // Giúp scrollbar bám sát lề trái hơn trên màn hình nhỏ
+      '&::-webkit-scrollbar-track': {
+        m: { xs: 1, sm: 2 }
+      }
     }}>
-      <Column />
-      <Column />
+
+      {/* Box List Columns */}
       <Column />
 
-
+      {/* Nút thêm List mới - Đã đồng bộ kích thước Responsive với Column */}
       <Box sx={{
-        minWidth: '300px',
-        maxWidth: '300px',
-        mx: 2,
+        // Đồng bộ width khít với Column (xs: 270px, sm: 300px)
+        minWidth: { xs: '270px', sm: '300px' },
+        maxWidth: { xs: '270px', sm: '300px' },
+
+        // Thu gọn margin ngang trên mobile
+        mx: { xs: 1, sm: 2 },
+
         borderRadius: '6px',
         height: 'fit-content',
         backgroundColor: 'background.columns'
@@ -35,6 +47,8 @@ function ListColumns() {
             justifyContent: 'flex-start',
             pl: 2,
             py: 1,
+            textTransform: 'none', // Đảm bảo chữ không bị tự động viết hoa (UPPERCASE)
+            fontSize: { xs: '0.85rem', sm: '0.9rem' }, // Responsive font-size
             '&:hover': {
               boxShadow: 'none',
               backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.24)' : 'rgba(0, 0, 0, 0.16)')

@@ -60,21 +60,29 @@ const theme = extendTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: {
+      styleOverrides: (theme) => ({
         body: {
+          // Cấu hình chung cho toàn bộ thanh cuộn trên trang
           '*::-webkit-scrollbar': {
             width: '8px',
             height: '8px'
           },
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: '#dcdde1',
+            // TỐI ƯU: Sử dụng luôn token màu palette của hệ thống thay vì fix cứng mã #hash màu
+            backgroundColor: theme.palette.mode === 'dark' ? '#4d4d4d' : '#dcdde1',
             borderRadius: '8px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: 'white'
-          }
+            backgroundColor: theme.palette.mode === 'dark' ? '#686868' : '#b2b3b8'
+          },
+
+          // Hỗ trợ thêm cho trình duyệt Firefox
+          scrollbarWidth: 'thin',
+          scrollbarColor: theme.palette.mode === 'dark'
+            ? '#4d4d4d transparent'
+            : '#dcdde1 transparent'
         }
-      }
+      })
     },
     MuiButton: {
       styleOverrides: {
@@ -87,7 +95,12 @@ const theme = extendTheme({
     },
     MuiInputLabel: {
       styleOverrides: {
-        root: { fontSize: '0.875rem' }
+        root: ({ theme }) => ({
+          fontSize: '0.875rem',
+          // TỐI ƯU: Đảm bảo nhãn của input luôn ăn theo màu text chuẩn hệ thống, đỡ phải viết đi viết lại ở component
+          color: theme.palette.text.primary,
+          '&.Mui-focused': { color: theme.palette.text.primary }
+        })
       }
     },
     MuiTypography: {
@@ -99,12 +112,24 @@ const theme = extendTheme({
     },
     MuiOutlinedInput: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           fontSize: '0.875rem',
-          '& fieldset': { borderWidth: '0.5px !important' },
-          '&:hover fieldset': { borderWidth: '1px !important' },
-          '&.Mui-focused fieldset': { borderWidth: '1px !important' }
-        }
+          color: theme.palette.text.primary, // Đảm bảo chữ nhập vào luôn rõ ràng ở cả 2 mode
+
+          // TỐI ƯU TOÀN DIỆN BORDER BIẾN ĐỔI THEO TEXT.PRIMARY CỦA TRELLO
+          '& fieldset': {
+            borderWidth: '0.5px !important',
+            borderColor: `${theme.palette.text.primary} !important`
+          },
+          '&:hover fieldset': {
+            borderWidth: '1px !important',
+            borderColor: `${theme.palette.text.primary} !important`
+          },
+          '&.Mui-focused fieldset': {
+            borderWidth: '1px !important',
+            borderColor: `${theme.palette.text.primary} !important`
+          }
+        })
       }
     }
   }
