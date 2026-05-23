@@ -1,5 +1,5 @@
 import * as React from 'react'
-import AppBar from '@mui/material/AppBar'
+import { AppBar as MuiAppBar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import IconButton from '@mui/material/IconButton'
@@ -21,7 +21,7 @@ import ModeSelect from '../ModeSelect/ModeSelect'
 import Divider from '@mui/material/Divider'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
-function PrimarySearchAppBar() {
+function AppBar() {
   const [searchValue, setSearchValue] = React.useState('')
 
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -97,15 +97,6 @@ function PrimarySearchAppBar() {
       </MenuItem>
 
       <MenuItem>
-        <IconButton size="large" aria-label="" color="inherit">
-          <Badge color="error">
-            <HelpOutlineIcon />
-          </Badge>
-        </IconButton>
-        <p>Help</p>
-      </MenuItem>
-
-      <MenuItem>
         <IconButton
           size="large"
           aria-label="show 17 new notifications"
@@ -115,52 +106,69 @@ function PrimarySearchAppBar() {
             <NotificationsIcon />
           </Badge>
         </IconButton>
-        <p>Notifications</p>
+        <Typography variant="body2">Notifications</Typography>
+      </MenuItem>
+
+      <MenuItem>
+        <IconButton size="large" aria-label="" color="inherit">
+          <Badge color="error">
+            <HelpOutlineIcon />
+          </Badge>
+        </IconButton>
+        <Typography variant="body2">Help</Typography>
       </MenuItem>
 
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           size="large"
           aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
+          aria-controls="menuId"
           aria-haspopup="true"
           color="inherit"
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <Typography variant="body2">Profile</Typography>
       </MenuItem>
     </Menu>
   )
 
   return (
     <Box sx={{ flexGrow: 1 }} >
-      <AppBar position="static"
+      <MuiAppBar position="static"
         sx={{
           width: '100%',
           height: (theme) => theme.moji.appBarHeight,
           backgroundColor: 'background.appBar',
           color: 'text.primary',
-          borderBottom: '1px solid rgb(23, 43, 77, 0.16)'
+          borderBottom: '1px solid',
+          // Tối ưu border tương thích với cả 2 chế độ màu hệ thống
+          borderColor: (theme) => theme.palette.divider,
+          boxShadow: 'none'
         }}
       >
-        <Toolbar sx={{ minHeight: '100% !important', px: '12px !important' }}>
-          <SvgIcon component={MojiIcon} fontSize="medium" inheritViewBox
-            sx={{
-              mr: 0.5
-            }}
-          />
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-          >
-            MOJI
-          </Typography>
+        <Toolbar sx={{ minHeight: '100% !important', px: { xs: '8px !important', sm: '12px !important' } }}>
+
+          {/* Logo Area */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <SvgIcon component={MojiIcon} fontSize="medium" inheritViewBox />
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                fontWeight: 'bold',
+                letterSpacing: '1px'
+              }}
+            >
+              MOJI
+            </Typography>
+          </Box>
+          {/* Ô Tìm kiếm: Thu gọn nhãn & độ rộng tối thiểu trên mobile để nhường chỗ cho nút Create */}
           <TextField
             id="outlined-search"
-            label="Search..."
+            label="Search"
             type="text"
             size="small"
             value={searchValue}
@@ -169,7 +177,7 @@ function PrimarySearchAppBar() {
               startAdornment: (
                 <InputAdornment position="start">
                   {/* Đổi màu icon kính lúp theo màu chữ tương phản của theme */}
-                  <SearchIcon sx={{ color: 'text.primary' }} />
+                  <SearchIcon sx={{ color: 'text.primary', fontSize: '1.1rem' }} />
                 </InputAdornment>
               ),
               endAdornment: (
@@ -186,14 +194,14 @@ function PrimarySearchAppBar() {
               )
             }}
             sx={{
-              minWidth: '120px',
-              width: '100%', // Ép TextField chiếm hết không gian của khung chứa nó
-              maxWidth: '500px', // Nâng giới hạn từ 500px lên 750px (hoặc tùy bạn chỉnh)
-              ml: 2,
-              mr: 0.5,
-              '& label': { color: 'text.primary' },
-              '& input': { color: 'text.primary' },
-              '& label.Mui-focused': { color: 'text.primary' },
+              // Giảm minWidth xuống tối đa giúp Search tự co bóp khi màn hình hẹp
+              minWidth: { xs: '60px', sm: '160px' },
+              maxWidth: { xs: '180px', sm: '400px' },
+              flexGrow: 1,
+              ml: { xs: 1, sm: 2 },
+              mr: 1,
+              '& label': { color: 'text.primary', fontSize: { xs: '11px', sm: '14px' } },
+              '& input': { color: 'text.primary', py: '6px' },
               '& .MuiOutlinedInput-root': {
                 '& fieldset': { borderColor: 'text.primary' },
                 '&:hover fieldset': { borderColor: 'text.primary' },
@@ -201,46 +209,46 @@ function PrimarySearchAppBar() {
               }
             }}
           />
+
+          {/* Nút Create: Giữ chữ "Create" xuyên suốt, chỉ thu gọn lề (padding) và font chữ trên Mobile */}
           <Button
             variant="contained"
             size="small"
             sx={{
               color: 'text.primary',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(102, 157, 241)' : 'rgba(0, 0, 0, 0.16)'),
-              height: '40px', // Cao bằng khít với TextField size="small"
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(102, 157, 241)' : 'rgba(0, 0, 0, 0.08)'),
+              height: '32px', // Cân đối lại chiều cao khít chuẩn size small
               fontWeight: 'bold',
               textTransform: 'none', // Giữ nguyên chữ "Create" không bị viết hoa toàn bộ
               whiteSpace: 'nowrap', // Tránh chữ bị xuống dòng khi màn hình bóp nhỏ
               boxShadow: 'none',
+              // Thiết lập font-size và padding nhỏ hơn trên màn hình di động (xs)
+              fontSize: { xs: '12px', sm: '13px' },
+              px: { xs: '8px', sm: '12px' },
+              minWidth: 'fit-content',
               '&:hover': {
                 boxShadow: 'none',
-                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.32)')
+                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)')
               }
             }}
           >
             Create
           </Button>
+
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+
+          {/* Khối chức năng bên phải - Desktop */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
             <ModeSelect />
-            <IconButton size="large" aria-label="" color="inherit">
-              <Badge color="error">
-                <HelpOutlineIcon />
-              </Badge>
+            <IconButton size="large" color="inherit">
+              <Badge badgeContent={17} color="error"><NotificationsIcon /></Badge>
             </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton size="large" color="inherit">
+              <Badge color="error"><HelpOutlineIcon /></Badge>
             </IconButton>
             <IconButton
               size="large"
               edge="end"
-              aria-label="account of current user"
               aria-controls={menuId}
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
@@ -249,10 +257,11 @@ function PrimarySearchAppBar() {
               <AccountCircle />
             </IconButton>
           </Box>
+
+          {/* Khối chức năng bên phải - Mobile */}
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="show more"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
               onClick={handleMobileMenuOpen}
@@ -262,11 +271,11 @@ function PrimarySearchAppBar() {
             </IconButton>
           </Box>
         </Toolbar>
-      </AppBar>
+      </MuiAppBar>
       {renderMobileMenu}
       {renderMenu}
     </Box >
   )
 }
 
-export default PrimarySearchAppBar
+export default AppBar

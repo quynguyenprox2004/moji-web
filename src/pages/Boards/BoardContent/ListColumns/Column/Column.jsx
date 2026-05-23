@@ -28,13 +28,23 @@ function Column() {
   const handleClose = () => { setAnchorEl(null) }
   return (
     <Box sx={{
-      minWidth: '300px',
-      maxWidth: '300px',
+      // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
+      minWidth: { xs: '270px', sm: '300px' },
+      maxWidth: { xs: '270px', sm: '300px' },
+
       backgroundColor: 'background.columns',
-      ml: 2,
+
+      // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
+      ml: { xs: 1, sm: 2 },
+
       borderRadius: '6px',
       height: 'fit-content',
-      maxHeight: (theme) => `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})`
+
+      // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
+      maxHeight: (theme) => ({
+        xs: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(2)})`, // Mobile dài hơn
+        md: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})` // Desktop ngắn lại tí
+      })
     }}>
 
       {/* Box Column Header */}
@@ -50,7 +60,9 @@ function Column() {
       }}>
         <Typography variant="h6" component="div"
           sx={{
-            fontSize: '1rem',
+            // Responsive FontSize cho tiêu đề Column
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+
             color: 'text.primary',
             fontWeight: 'bold',
             cursor: 'pointer',
@@ -117,6 +129,7 @@ function Column() {
         </Box>
       </Box>
 
+      {/* Box List Cards */}
       <ListCards />
 
       {/* Box Column Footer */}
@@ -137,6 +150,10 @@ function Column() {
             flexGrow: 1,
             justifyContent: 'flex-start',
             textTransform: 'none',
+
+            // Responsive font size cho nút bấm dưới chân Column
+            fontSize: { xs: '0.85rem', sm: '0.9rem' },
+
             '&:hover': {
               boxShadow: 'none',
               backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
