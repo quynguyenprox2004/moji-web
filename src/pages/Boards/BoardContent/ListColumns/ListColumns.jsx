@@ -17,10 +17,7 @@ function ListColumns() {
       <Column />
       <Column />
       <Column />
-      <Column />
-      <Column />
-      <Column />
-      <Column />
+
 
       <Box sx={{
         minWidth: '300px',
@@ -37,7 +34,11 @@ function ListColumns() {
             width: '100%',
             justifyContent: 'flex-start',
             pl: 2,
-            py: 1
+            py: 1,
+            '&:hover': {
+              boxShadow: 'none',
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.24)' : 'rgba(0, 0, 0, 0.16)')
+            }
           }}
         >
           Add another list
