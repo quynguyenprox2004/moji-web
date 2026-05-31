@@ -14,9 +14,11 @@ import Logout from '@mui/icons-material/Logout'
 function Profiles() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
+
   const handleClose = () => {
     setAnchorEl(null)
   }
@@ -33,42 +35,60 @@ function Profiles() {
           aria-expanded={open ? 'true' : undefined}
         >
           <Avatar
-            sx={{ width: 36, height: 36 }}
-            alt=""
-            src=""
-          >M</Avatar>
+            sx={{ width: 34, height: 34 }}
+            alt="TrungQuanDev"
+            src="https://trungquandev.com/wp-content/uploads/2023/05/main-avatar-circle-min-trungquandev-codetq.jpeg"
+          />
         </IconButton>
       </Tooltip>
+
       <Menu
         id="basic-menu-profiles"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         MenuListProps={{
           'aria-labelledby': 'basic-button-profiles'
         }}
+        sx={{
+          '& .MuiPaper-root': {
+            color: 'text.primary',
+            backgroundColor: 'background.paper',
+            boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
+            mt: 0.5
+          }
+        }}
       >
-        <MenuItem>
-          <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> Profile
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.875rem' }}>
+          <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> Profile
         </MenuItem>
-        <MenuItem>
-          <Avatar sx={{ width: 28, height: 28, mr: 2 }} /> My account
+
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.875rem' }}>
+          <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> My account
         </MenuItem>
-        <Divider />
-        <MenuItem>
-          <ListItemIcon>
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.875rem' }}>
+          <ListItemIcon sx={{ color: 'text.primary' }}>
             <PersonAdd fontSize="small" />
           </ListItemIcon>
           Add another account
         </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
+
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.875rem' }}>
+          <ListItemIcon sx={{ color: 'text.primary' }}>
             <Settings fontSize="small" />
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <MenuItem onClick={handleClose} sx={{ fontSize: '0.875rem' }}>
+          <ListItemIcon sx={{ color: 'text.primary' }}>
             <Logout fontSize="small" />
           </ListItemIcon>
           Logout

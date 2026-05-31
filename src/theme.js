@@ -18,42 +18,38 @@ const theme = extendTheme({
     light: {
       palette: {
         primary: {
-          main: '#005180', // Hãy giữ một màu xanh đậm làm màu thương hiệu (để dùng cho nút bấm, link)
+          main: '#005180',
           contrastText: '#ffffff'
         },
-        // Tập trung quản lý toàn bộ màu nền hệ thống ở đây
         background: {
-          default: '#DFEBFE', // Mã màu của bạn: Dùng cho BoardContent (vùng nền lớn nhất)
-          paper: '#FFFFFF', // Dùng cho các thanh Column và các thẻ Card công việc
-          // Bạn hoàn toàn có thể tự tạo thêm thuộc tính con tùy ý trong background:
-          appBar: '#FFFFFF', // Mã màu của bạn: AppBar trắng tinh
-          boardBar: '#E7F1FD', // Mã màu của bạn: BoardBar xanh nhạt thanh lịch
+          default: '#DCE9FE',
+          paper: '#FFFFFF',
+          appBar: '#FFFFFF',
+          boardBar: '#EBF3FE',
           columns: '#F1F2F4'
         },
         text: {
-          primary: '#172b4d', // Chữ màu xanh đen đậm để đọc rất rõ trên nền xanh nhạt của bạn
-          secondary: '#5e6c84'
+          primary: '#172B4D',
+          secondary: '#292A2E'
         }
       }
     },
     dark: {
       palette: {
         primary: {
-          main: '#005180', // Hãy giữ một màu xanh đậm làm màu thương hiệu (để dùng cho nút bấm, link)
+          main: '#005180',
           contrastText: '#ffffff'
         },
-        // Tập trung quản lý toàn bộ màu nền hệ thống ở đây
         background: {
-          default: '#172E51', // Mã màu của bạn: Dùng cho BoardContent (vùng nền lớn nhất)
-          paper: '#1F1F21', // Dùng cho các thanh Column và các thẻ Card công việc
-          // Bạn hoàn toàn có thể tự tạo thêm thuộc tính con tùy ý trong background:
-          appBar: '#1F1F21', // Mã màu của bạn: AppBar trắng tinh
-          boardBar: '#142138', // Mã màu của bạn: BoardBar xanh nhạt thanh lịch
+          default: '#1B2C47',
+          paper: '#1F1F21',
+          appBar: '#1F1F21',
+          boardBar: '#13223A',
           columns: '#101204'
         },
         text: {
-          primary: '#FFFFFF', // Chữ màu xanh đen đậm để đọc rất rõ trên nền xanh nhạt của bạn
-          secondary: '#5e6c84'
+          primary: '#FFFFFF',
+          secondary: '#CECFD2'
         }
       }
     }
@@ -64,23 +60,16 @@ const theme = extendTheme({
         body: {
           // Cấu hình chung cho toàn bộ thanh cuộn trên trang
           '*::-webkit-scrollbar': {
-            width: '8px',
-            height: '8px'
+            width: '6px',
+            height: '6px'
           },
           '*::-webkit-scrollbar-thumb': {
-            // TỐI ƯU: Sử dụng luôn token màu palette của hệ thống thay vì fix cứng mã #hash màu
             backgroundColor: theme.palette.mode === 'dark' ? '#4d4d4d' : '#dcdde1',
-            borderRadius: '8px'
+            borderRadius: '6px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
             backgroundColor: theme.palette.mode === 'dark' ? '#686868' : '#b2b3b8'
-          },
-
-          // Hỗ trợ thêm cho trình duyệt Firefox
-          scrollbarWidth: 'thin',
-          scrollbarColor: theme.palette.mode === 'dark'
-            ? '#4d4d4d transparent'
-            : '#dcdde1 transparent'
+          }
         }
       })
     },
@@ -103,13 +92,13 @@ const theme = extendTheme({
         })
       }
     },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          '&.MuiTypography-body1': { fontSize: '0.875rem' }
-        }
-      }
-    },
+    // MuiTypography: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.MuiTypography-body1': { fontSize: '0.875rem' }
+    //     }
+    //   }
+    // },
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({

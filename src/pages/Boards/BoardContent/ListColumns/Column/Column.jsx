@@ -21,7 +21,7 @@ import AddIcon from '@mui/icons-material/Add'
 import IconButton from '@mui/material/IconButton'
 
 
-function Column() {
+function Column({ column }) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
@@ -37,7 +37,7 @@ function Column() {
       // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
       ml: { xs: 1, sm: 2 },
 
-      borderRadius: '6px',
+      borderRadius: '16px',
       height: 'fit-content',
 
       // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
@@ -52,13 +52,12 @@ function Column() {
         height: (theme) => theme.moji.columnHeaderHeight,
         p: '10px 5px',
         mx: '5px',
-        gap: 0.5,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         color: 'text.primary'
       }}>
-        <Typography variant="h6" component="div"
+        <Typography variant="h6"
           sx={{
             // Responsive FontSize cho tiêu đề Column
             fontSize: { xs: '0.9rem', sm: '1rem' },
@@ -69,25 +68,27 @@ function Column() {
             flexGrow: 1
             // bgcolor: 'rgba(0,0,0,0.3)' // đang test
           }}>
-          Column Title
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title="List actions">
             <IconButton
+              sx={{
+                color: 'text.primary',
+                // cursor: 'pointer',
+                borderRadius: '5px',
+                // p: '0',
+                '&:hover': {
+                  boxShadow: 'none',
+                  backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
+                }
+              }}
               id="basic-column-dropdown"
               aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
-              sx={{
-                color: 'text.primary',
-                borderRadius: '5px',
-                p: '6px',
-                '&:hover': {
-                  boxShadow: 'none',
-                  backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
-                }
-              }} >
+            >
               <MoreHorizIcon />
             </IconButton>
           </Tooltip>
@@ -130,14 +131,13 @@ function Column() {
       </Box>
 
       {/* Box List Cards */}
-      <ListCards />
+      <ListCards cards={column?.cards} />
 
       {/* Box Column Footer */}
       <Box sx={{
         height: (theme) => theme.moji.columnFooterHeight,
         p: '10px 5px',
         mx: '5px',
-        gap: 0.5,
         display: 'flex',
         alignItems: 'center',
         color: 'text.primary'
@@ -156,7 +156,7 @@ function Column() {
 
             '&:hover': {
               boxShadow: 'none',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
             }
           }}>
           Add a card
@@ -167,7 +167,7 @@ function Column() {
             borderRadius: '5px',
             '&:hover': {
               boxShadow: 'none',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgba(227, 228, 242, 0.12)' : 'rgba(0, 0, 0, 0.16)')
+              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
             }
           }} >
             <DragHandleIcon sx={{ cursor: 'grab' }} />
