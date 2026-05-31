@@ -31,36 +31,115 @@ import Profiles from './Menu/Profiles'
 
 function AppBar() {
   const [searchValue, setSearchValue] = React.useState('')
+  const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
+  const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
+  const handleProfileMenuOpen = (event) => {
+    // 1. Lấy điểm neo từ chính nút Ba Chấm trên thanh AppBar đang mở Menu Mobile
+    if (mobileMoreAnchorEl) {
+      setAnchorEl(mobileMoreAnchorEl)
+    } else {
+      setAnchorEl(event.currentTarget)
+    }
+
+    // 2. Đóng menu mobile sau khi menu desktop đã xác định được điểm neo
+    handleMobileMenuClose()
+  }
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+    handleMobileMenuClose()
   }
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
 
+  const menuId = 'primary-search-account-menu'
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+      disableEnforceFocus // <-- THÊM DÒNG NÀY. Bổ sung các thuộc tính vô hiệu hóa bẫy Focus của MUI
+      disableAutoFocusItem={true} // <-- THÊM DÒNG NÀY. Bổ sung các thuộc tính vô hiệu hóa bẫy Focus của MUI
+      sx={{
+        '& .MuiPaper-root': {
+          width: '200px', // Khóa nhẹ độ rộng menu mobile cho các item chữ dài nhìn đều đặn
+          color: 'text.primary',
+          mt: 1.3
+        }
+      }}
+    >
+      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
+        <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> Profile
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
+        <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> My account
+      </MenuItem>
+      <Divider sx={{ my: 0.5 }} />
+      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
+        <ListItemIcon sx={{ color: 'text.primary' }}>
+          <PersonAdd fontSize="small" />
+        </ListItemIcon>
+        Add another account
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
+        <ListItemIcon sx={{ color: 'text.primary' }}>
+          <Settings fontSize="small" />
+        </ListItemIcon>
+        Settings
+      </MenuItem>
+
+      <Divider sx={{ my: 0.5 }} />
+
+      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
+        <ListItemIcon sx={{ color: 'text.primary' }}>
+          <Logout fontSize="small" />
+        </ListItemIcon>
+        Logout
+      </MenuItem>
+    </Menu>
+  )
+
   // --- MENU RESPONSIVE TRÊN MOBILE (ĐÃ TRẢI PHẲNG TÍNH NĂNG) ---
   const mobileMenuId = 'primary-search-account-menu-mobile'
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       id={mobileMenuId}
       keepMounted
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      disableEnforceFocus // <-- THÊM DÒNG NÀY. Bổ sung các thuộc tính vô hiệu hóa bẫy Focus của MUI
       sx={{
         '& .MuiPaper-root': {
           width: '200px', // Khóa nhẹ độ rộng menu mobile cho các item chữ dài nhìn đều đặn
-          color: 'text.primary'
+          color: 'text.primary',
+          mt: 1.3
         }
       }}
     >
+      {/*  PROFILE*/}
+      <MenuItem onClick={handleProfileMenuOpen} sx={{ fontSize: '0.875rem' }}>
+        <Avatar sx={{ width: 24, height: 24, mr: 2 }} src="https://trungquandev.com/wp-content/uploads/2023/05/main-avatar-circle-min-trungquandev-codetq.jpeg" />
+        Profile
+      </MenuItem>
+
+      <Divider sx={{ my: 0.5 }} />
+
       {/* 1. Chế độ giao diện (Light/Dark) */}
       <MenuItem sx={{ p: 0, '& .MuiFormControl-root': { m: 0, width: '100%' } }}>
         <Box sx={{ width: '100%', px: 2, py: 0.5 }}>
@@ -70,11 +149,6 @@ function AppBar() {
 
       {/* 2. Thông báo hệ thống */}
       <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        {/* <IconButton size="small" color="inherit" sx={{ mr: 1 }}>
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon fontSize="small" />
-          </Badge>
-        </IconButton> */}
         <Tooltip title="Notifications">
           <Badge color="warning" variant="dot" sx={{ mr: 2, cursor: 'pointer' }}>
             <NotificationsNoneIcon sx={{ color: 'text.primary' }} />
@@ -85,47 +159,10 @@ function AppBar() {
 
       {/* 3. Trợ giúp */}
       <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        {/* <IconButton size="small" color="inherit" sx={{ mr: 1 }}>
-          <HelpOutlineIcon fontSize="small" />
-        </IconButton> */}
         <Tooltip title="Help">
           <HelpOutlineIcon sx={{ mr: 2, cursor: 'pointer', color: 'text.primary' }} />
         </Tooltip>
         Help
-      </MenuItem>
-
-      <Divider sx={{ my: 0.5 }} />
-
-      {/* --- CÁC TÍNH NĂNG TRẢI PHẲNG TỪ PROFILE XUỐNG --- */}
-      <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <Avatar sx={{ width: 24, height: 24, mr: 2 }} src="https://trungquandev.com/wp-content/uploads/2023/05/main-avatar-circle-min-trungquandev-codetq.jpeg" />
-        Profile
-      </MenuItem>
-
-      <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <Avatar sx={{ width: 24, height: 24, mr: 2 }} />
-        My account
-      </MenuItem>
-
-      <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <ListItemIcon sx={{ color: 'text.primary', minWidth: '36px !important' }}>
-          <PersonAdd fontSize="small" />
-        </ListItemIcon>
-        Add account
-      </MenuItem>
-
-      <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <ListItemIcon sx={{ color: 'text.primary', minWidth: '36px !important' }}>
-          <Settings fontSize="small" />
-        </ListItemIcon>
-        Settings
-      </MenuItem>
-
-      <MenuItem onClick={handleMobileMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <ListItemIcon sx={{ color: 'text.primary', minWidth: '36px !important' }}>
-          <Logout fontSize="small" />
-        </ListItemIcon>
-        Logout
       </MenuItem>
     </Menu>
   )
@@ -216,7 +253,7 @@ function AppBar() {
           <Box sx={{ flexGrow: 1 }} />
 
           {/* Khối chức năng bên phải - Desktop */}
-          <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 2 }}>
             <ModeSelect />
 
             <Tooltip title="Notifications">
@@ -235,13 +272,23 @@ function AppBar() {
 
           {/* Khối chức năng bên phải - Mobile */}
           <Box sx={{ display: { xs: 'flex', sm: 'none' } }}>
-            <IconButton size="large" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} color="inherit">
+            <IconButton size="medium" aria-controls={mobileMenuId} aria-haspopup="true" onClick={handleMobileMenuOpen} sx={{
+              color: 'text.primary',
+              // cursor: 'pointer',
+              borderRadius: '5px',
+              // p: '0',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
+              }
+            }} >
               <MoreHorizIcon />
             </IconButton>
           </Box>
         </Toolbar>
       </MuiAppBar>
       {renderMobileMenu}
+      {renderMenu}
     </Box >
   )
 }
