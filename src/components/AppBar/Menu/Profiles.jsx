@@ -57,7 +57,7 @@ function Profiles() {
             color: 'text.primary',
             backgroundColor: 'background.paper',
             boxShadow: '0px 4px 12px rgba(0,0,0,0.1)',
-            mt: 0.5
+            mt: 1.6
           }
         }}
       >

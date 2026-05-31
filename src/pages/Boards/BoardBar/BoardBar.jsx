@@ -84,7 +84,7 @@ function BoardBar({ board }) {
         <Chip
           sx={{
             ...MENU_STYLES,
-            maxWidth: { xs: '140px', sm: '240px' },
+            maxWidth: { xs: '220px', sm: '320px' },
             '& .MuiChip-label': {
               ...MENU_STYLES['& .MuiChip-label'],
               whiteSpace: 'nowrap',
