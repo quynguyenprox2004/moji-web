@@ -40,7 +40,7 @@ function BoardContent({ board }) {
       const newIndex = orderedColumns.findIndex(c => c._id === over.id)
 
       // Dùng arrayMove của thằng dnd-kit để sắp xếp lại mảng Columns ban đầu
-      // Code của arrayMove ở đây: dnd-kit/packages/sortable/src/utilities/arrayMove.ts. Hiện đã ẩn không tìm thấy
+      // Code của arrayMove ở đây: dnd-kit/packages/sortable/src/utilities/arrayMove.ts. *Ở nhánh master của dnd
       const dndOrderedColumns = arrayMove(orderedColumns, oldIndex, newIndex)
       /**2 cái console.log dữ liệu này dùng để xử lý gọi API */
       // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
