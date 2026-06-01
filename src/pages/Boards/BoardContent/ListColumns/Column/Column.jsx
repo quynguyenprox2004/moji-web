@@ -20,20 +20,9 @@ import DragHandleIcon from '@mui/icons-material/DragHandle'
 import AddIcon from '@mui/icons-material/Add'
 import IconButton from '@mui/material/IconButton'
 import { mapOrder } from '~/utils/sorts'
-import { useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 
 
 function Column({ column }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: column._id, data: { ...column } })
-  const dndKitColumnStyles = {
-    // Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
-    // https://github.com/clauderic/dnd-kit/issues/117
-    transform: CSS.Translate.toString(transform),
-    transition
-  }
-
   const [anchorEl, setAnchorEl] = React.useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
@@ -42,30 +31,25 @@ function Column({ column }) {
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
 
   return (
-    <Box
-      ref={setNodeRef}
-      style={dndKitColumnStyles}
-      {...attributes}
-      {...listeners}
-      sx={{
-        // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
-        minWidth: { xs: '270px', sm: '300px' },
-        maxWidth: { xs: '270px', sm: '300px' },
+    <Box sx={{
+      // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
+      minWidth: { xs: '270px', sm: '300px' },
+      maxWidth: { xs: '270px', sm: '300px' },
 
-        backgroundColor: 'background.columns',
+      backgroundColor: 'background.columns',
 
-        // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
-        ml: { xs: 1, sm: 2 },
+      // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
+      ml: { xs: 1, sm: 2 },
 
-        borderRadius: '16px',
-        height: 'fit-content',
+      borderRadius: '16px',
+      height: 'fit-content',
 
-        // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
-        maxHeight: (theme) => ({
-          xs: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(2)})`, // Mobile dài hơn
-          md: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})` // Desktop ngắn lại tí
-        })
-      }}>
+      // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
+      maxHeight: (theme) => ({
+        xs: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(2)})`, // Mobile dài hơn
+        md: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})` // Desktop ngắn lại tí
+      })
+    }}>
 
       {/* Box Column Header */}
       <Box sx={{
