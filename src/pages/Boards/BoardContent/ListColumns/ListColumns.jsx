@@ -26,7 +26,6 @@ function ListColumns({ columns }) {
       {/* Box List Columns */}
       {columns?.map(column => <Column key={column._id} column={column} />)}
 
-
       {/* Nút thêm List mới - Đã đồng bộ kích thước Responsive với Column */}
       <Box sx={{
         // Đồng bộ width khít với Column (xs: 270px, sm: 300px)
