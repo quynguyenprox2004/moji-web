@@ -3,12 +3,11 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
-import { capitalizeFirstLetter } from '~/utils/formatters'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
-
+import { capitalizeFirstLetter } from '~/utils/formatters'
 // Import các sub-components vừa tách
 import BoardUserGroup from './Menu/BoardUserGroup'
 import BoardInvite from './Menu/BoardInvite'

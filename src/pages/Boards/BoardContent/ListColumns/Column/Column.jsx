@@ -19,6 +19,7 @@ import Button from '@mui/material/Button'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import AddIcon from '@mui/icons-material/Add'
 import IconButton from '@mui/material/IconButton'
+import { mapOrder } from '~/utils/sorts'
 
 
 function Column({ column }) {
@@ -26,6 +27,9 @@ function Column({ column }) {
   const open = Boolean(anchorEl)
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
+
+  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
   return (
     <Box sx={{
       // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
@@ -131,7 +135,8 @@ function Column({ column }) {
       </Box>
 
       {/* Box List Cards */}
-      <ListCards cards={column?.cards} />
+      {/* <ListCards cards={column?.cards} /> */}
+      <ListCards cards={orderedCards} />
 
       {/* Box Column Footer */}
       <Box sx={{
