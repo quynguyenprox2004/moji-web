@@ -7,26 +7,40 @@ import Typography from '@mui/material/Typography'
 import GroupIcon from '@mui/icons-material/Group'
 import CommentIcon from '@mui/icons-material/Comment'
 import AttachmentIcon from '@mui/icons-material/Attachment'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 function Card({ card }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: card._id, data: { ...card } })
+  const dndKitCardStyles = {
+    // touchAction: 'none', // Dành cho sensor default dạng PointerSensor
+    // Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
+    // https://github.com/clauderic/dnd-kit/issues/117
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined
+  }
 
   const shouldShowCardActions = () => {
     return !!card?.memberIds?.length || !!card?.comments?.length || !!card?.attachments?.length
   }
 
   return (
-    <MuiCard sx={{
-      cursor: 'pointer',
-      border: '2px solid transparent', // Thêm border mặc định cùng màu nền để tránh giật layout khi hover
-      boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-      overflow: 'unset',
-      width: '100%', // Tự động fill đầy theo độ rộng của Column cha (Responsive tự nhiên)
-      wordBreak: 'break-word', // Tránh tình trạng text quá dài làm vỡ layout trên màn hình nhỏ
-      '&:hover': {
-        borderColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(102, 157, 241)' : 'rgb(143, 184, 246)')
-        // boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
-      }
-    }}>
+    <MuiCard
+      ref={setNodeRef} style={dndKitCardStyles} {...attributes} {...listeners}
+      sx={{
+        cursor: 'pointer',
+        border: '2px solid transparent', // Thêm border mặc định cùng màu nền để tránh giật layout khi hover
+        boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
+        overflow: 'unset',
+        width: '100%', // Tự động fill đầy theo độ rộng của Column cha (Responsive tự nhiên)
+        wordBreak: 'break-word', // Tránh tình trạng text quá dài làm vỡ layout trên màn hình nhỏ
+        '&:hover': {
+          borderColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(102, 157, 241)' : 'rgb(143, 184, 246)')
+          // boxShadow: '0 2px 5px rgba(0,0,0,0.3)'
+        }
+      }}>
       {card?.cover &&
         <CardMedia
           sx={{
