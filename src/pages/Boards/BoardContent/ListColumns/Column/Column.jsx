@@ -25,14 +25,17 @@ import { CSS } from '@dnd-kit/utilities'
 
 
 function Column({ column }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: column._id, data: { ...column } })
   const dndKitColumnStyles = {
     // touchAction: 'none', // Dành cho sensor default dạng PointerSensor
     // Nếu sử dụng CSS.Transform như docs sẽ lỗi kiểu stretch
     // https://github.com/clauderic/dnd-kit/issues/117
     transform: CSS.Translate.toString(transform),
-    transition
+    transition,
+    // Chiều cao phải luôn max 100% vì nếu không sẽ lỗi lúc kéo column ngắn qua một cái column dài thì phải kéo ở khu vực giữa rất khó chịu. Lưu ý lúc này phải kết hợp với {...listeners} nằm ở Box chứ không phải ở div ngoài cùng để tránh trường hợp kéo vào vùng xanh.
+    height: '100%',
+    opacity: isDragging ? 0.5 : undefined
   }
 
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -42,161 +45,161 @@ function Column({ column }) {
 
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
 
+  // Phải bọc div ở đây vì vấn đề chiều cao của column khi kéo thả sẽ ó bug kiểu flickering
   return (
-    <Box
-      ref={setNodeRef}
-      style={dndKitColumnStyles}
-      {...attributes}
-      {...listeners}
-      sx={{
-        // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
-        minWidth: { xs: '270px', sm: '300px' },
-        maxWidth: { xs: '270px', sm: '300px' },
+    <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
+      <Box
+        {...listeners}
+        sx={{
+          // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
+          minWidth: { xs: '270px', sm: '300px' },
+          maxWidth: { xs: '270px', sm: '300px' },
 
-        backgroundColor: 'background.columns',
+          backgroundColor: 'background.columns',
 
-        // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
-        ml: { xs: 1, sm: 2 },
+          // Responsive Margin Left: Giảm khoảng cách giữa các column trên mobile để tiết kiệm không gian
+          ml: { xs: 1, sm: 2 },
 
-        borderRadius: '16px',
-        height: 'fit-content',
+          borderRadius: '16px',
+          height: 'fit-content',
 
-        // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
-        maxHeight: (theme) => ({
-          xs: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(2)})`, // Mobile dài hơn
-          md: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})` // Desktop ngắn lại tí
-        })
-      }}>
+          // Responsive Max Height: Trên mobile (xs) trừ 2 (16px), trên desktop (md) trừ 5 (40px)
+          maxHeight: (theme) => ({
+            xs: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(2)})`, // Mobile dài hơn
+            md: `calc(${theme.moji.boardContentHeight} - ${theme.spacing(5)})` // Desktop ngắn lại tí
+          })
+        }}>
 
-      {/* Box Column Header */}
-      <Box sx={{
-        height: (theme) => theme.moji.columnHeaderHeight,
-        p: '10px 5px',
-        mx: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        // justifyContent: 'space-between',
-        color: 'text.primary'
-      }}>
-        <Typography variant="h6"
-          sx={{
-            // Responsive FontSize cho tiêu đề Column
-            fontSize: { xs: '0.9rem', sm: '1rem' },
+        {/* Box Column Header */}
+        <Box sx={{
+          height: (theme) => theme.moji.columnHeaderHeight,
+          p: '10px 5px',
+          mx: '5px',
+          display: 'flex',
+          alignItems: 'center',
+          // justifyContent: 'space-between',
+          color: 'text.primary'
+        }}>
+          <Typography variant="h6"
+            sx={{
+              // Responsive FontSize cho tiêu đề Column
+              fontSize: { xs: '0.9rem', sm: '1rem' },
 
-            color: 'text.primary',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            flexGrow: 1
-            // bgcolor: 'rgba(0,0,0,0.3)' // đang test
-          }}>
-          {column?.title}
-        </Typography>
-        <Box>
-          <Tooltip title="List actions">
-            <IconButton
-              sx={{
-                color: 'text.primary',
-                // cursor: 'pointer',
-                borderRadius: '5px',
-                // p: '0',
-                '&:hover': {
-                  boxShadow: 'none',
-                  backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
-                }
+              color: 'text.primary',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              flexGrow: 1
+              // bgcolor: 'rgba(0,0,0,0.3)' // đang test
+            }}>
+            {column?.title}
+          </Typography>
+          <Box>
+            <Tooltip title="List actions">
+              <IconButton
+                sx={{
+                  color: 'text.primary',
+                  // cursor: 'pointer',
+                  borderRadius: '5px',
+                  // p: '0',
+                  '&:hover': {
+                    boxShadow: 'none',
+                    backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
+                  }
+                }}
+                id="basic-column-dropdown"
+                aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleClick}
+              >
+                <MoreHorizIcon />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              id="basic-menu-column-dropdown"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-column-dropdown'
               }}
-              id="basic-column-dropdown"
-              aria-controls={open ? 'basic-menu-column-dropdown' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
             >
-              <MoreHorizIcon />
+              <MenuItem>
+                <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Add card</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
+                <ListItemText>Cut</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
+                <ListItemText>Copy</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
+                <ListItemText>Paste</ListItemText>
+              </MenuItem>
+              <Divider />
+              <MenuItem>
+                <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
+                <ListItemText>Remove this column</ListItemText>
+              </MenuItem>
+              <MenuItem>
+                <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
+                <ListItemText>Archive this column</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
+        </Box>
+
+        {/* Box List Cards */}
+        {/* <ListCards cards={column?.cards} /> */}
+        <ListCards cards={orderedCards} />
+
+        {/* Box Column Footer */}
+        <Box sx={{
+          height: (theme) => theme.moji.columnFooterHeight,
+          p: '10px 5px',
+          mx: '5px',
+          display: 'flex',
+          alignItems: 'center',
+          color: 'text.primary'
+        }}>
+          <Button
+            size="medium"
+            startIcon={<AddIcon />}
+            sx={{
+              color: 'text.primary',
+              flexGrow: 1,
+              justifyContent: 'flex-start',
+              textTransform: 'none',
+
+              // Responsive font size cho nút bấm dưới chân Column
+              fontSize: { xs: '0.85rem', sm: '0.9rem' },
+
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
+              }
+            }}>
+            Add a card
+          </Button>
+          <Tooltip title="Drag to move">
+            <IconButton size="medium" sx={{
+              color: 'text.primary',
+              borderRadius: '5px',
+              '&:hover': {
+                boxShadow: 'none',
+                backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
+              }
+            }} >
+              <DragHandleIcon sx={{ cursor: 'grab' }} />
             </IconButton>
           </Tooltip>
-          <Menu
-            id="basic-menu-column-dropdown"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-column-dropdown'
-            }}
-          >
-            <MenuItem>
-              <ListItemIcon><AddCardIcon fontSize="small" /></ListItemIcon>
-              <ListItemText>Add card</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentCut fontSize="small" /></ListItemIcon>
-              <ListItemText>Cut</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentCopy fontSize="small" /></ListItemIcon>
-              <ListItemText>Copy</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><ContentPaste fontSize="small" /></ListItemIcon>
-              <ListItemText>Paste</ListItemText>
-            </MenuItem>
-            <Divider />
-            <MenuItem>
-              <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
-              <ListItemText>Remove this column</ListItemText>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon><Cloud fontSize="small" /></ListItemIcon>
-              <ListItemText>Archive this column</ListItemText>
-            </MenuItem>
-          </Menu>
         </Box>
       </Box>
-
-      {/* Box List Cards */}
-      {/* <ListCards cards={column?.cards} /> */}
-      <ListCards cards={orderedCards} />
-
-      {/* Box Column Footer */}
-      <Box sx={{
-        height: (theme) => theme.moji.columnFooterHeight,
-        p: '10px 5px',
-        mx: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        color: 'text.primary'
-      }}>
-        <Button
-          size="medium"
-          startIcon={<AddIcon />}
-          sx={{
-            color: 'text.primary',
-            flexGrow: 1,
-            justifyContent: 'flex-start',
-            textTransform: 'none',
-
-            // Responsive font size cho nút bấm dưới chân Column
-            fontSize: { xs: '0.85rem', sm: '0.9rem' },
-
-            '&:hover': {
-              boxShadow: 'none',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
-            }
-          }}>
-          Add a card
-        </Button>
-        <Tooltip title="Drag to move">
-          <IconButton size="medium" sx={{
-            color: 'text.primary',
-            borderRadius: '5px',
-            '&:hover': {
-              boxShadow: 'none',
-              backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
-            }
-          }} >
-            <DragHandleIcon sx={{ cursor: 'grab' }} />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    </Box>
+    </div>
   )
 }
 
