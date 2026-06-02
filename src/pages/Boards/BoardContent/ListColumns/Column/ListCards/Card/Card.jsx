@@ -35,6 +35,7 @@ function Card({ card }) {
         border: '2px solid transparent', // Thêm border mặc định cùng màu nền để tránh giật layout khi hover
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
         overflow: 'unset',
+        display: card?.FE_PlaceholderCard ? 'none' : 'block',
         width: '100%', // Tự động fill đầy theo độ rộng của Column cha (Responsive tự nhiên)
         wordBreak: 'break-word', // Tránh tình trạng text quá dài làm vỡ layout trên màn hình nhỏ
         '&:hover': {
