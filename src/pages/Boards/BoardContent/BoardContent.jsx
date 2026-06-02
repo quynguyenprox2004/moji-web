@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
-import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects, closestCorners } from '@dnd-kit/core'
+import { DndContext, MouseSensor, TouchSensor, useSensor, useSensors, DragOverlay, defaultDropAnimationSideEffects, closestCorners, closestCenter, pointerWithin, rectIntersection, getFirstCollision } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { cloneDeep } from 'lodash'
 
 import Column from './ListColumns/Column/Column'
@@ -35,6 +35,9 @@ function BoardContent({ board }) {
   const [activeDragItemType, setActiveDragItemType] = useState(null)
   const [activeDragItemData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDraggingCard, setOldColumnWhenDraggingCard] = useState(null)
+
+  // Điểm va chạm cuối cùng trước đó (xử lý thuật toán phát hiện va chạm, v37)
+  const lastOverId = useRef(null)
 
   useEffect(() => {
     setOrderedColumns(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -253,13 +256,59 @@ function BoardContent({ board }) {
     sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.5' } } })
   }
 
+  // Custom lại chiến lược/ thuật toán phát hiện va chạm tối ưu cho việc kéo thả card giữa nhiều columns
+  // args = arguments = Các Đối số, tham số
+  const collisionDetectionStrategy = useCallback((args) => {
+    // Trường hợp kéo column thì dùng thuật toán closestCorners là chuẩn nhất
+    if (activeDragItemType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      return closestCorners({ ...args })
+    }
+
+    // Tìm các điểm giao nhau, va chạm - intersections với con trỏ
+    const pointerIntersections = pointerWithin(args)
+
+    // Thuật toán phát hiện va chạm sẽ trả về một mảng các va chạm ở đây
+    const intersections = !!pointerIntersections?.length
+      ? pointerIntersections
+      : rectIntersection(args)
+
+    // Tìm overId đầu tiên trong đám intersections ở trên
+    let overId = getFirstCollision(intersections, 'id')
+    if (overId) {
+      // V37: Đoạn này để fix cái vụ flickering.
+      // Nếu cái over nó là column thì sẽ tìm tới cái cardId gần nhất bên trong khu vực va chạm đó dựa vào thuật toán phát hiện va chạm closestCenter hoặc closestCorners đều được. Tuy nhiên ở đây dùng closestCorners mình thấy mượt mà hơn.
+      const checkColumn = orderedColumns.find(column => column._id === overId)
+      if (checkColumn) {
+        // console.log('overId before: ', overId)
+        overId = closestCenter({
+          ...args,
+          droppableContainers: args.droppableContainers.filter(container => {
+            return (container.id !== overId) && (checkColumn?.cardOrderIds?.includes(container.id))
+          })
+        })[0]?.id
+        // console.log('overId after: ', overId)
+      }
+
+      lastOverId.current = overId
+      return [{ id: overId }]
+    }
+
+    // Nếu overId là null thì trả về mảng rỗng - tránh bug crash trang
+    return lastOverId.current ? [{ id: lastOverId.curent }] : []
+  }, [activeDragItemType, orderedColumns])
+
   return (
     <DndContext
       // Cảm biến
       sensors={sensors}
       // Thuật toán phát hiện va chạm (nếu không có nó thì card với cover lớn sẽ không kéo qua Column được vì lúc này nó đang bị conflict giữa card và column), chúng ta sẽ dùng closestCorners thay vì closestCenter
       // https://docs.dndkit.com/api-documentation/context-provider/collision-detection-algorithms
-      collisionDetection={closestCorners}
+      // Nếu chỉ dùng closestCorners sẽ có bug flickering + sai lệch dữ liệu
+      // collisionDetection={closestCorners}
+
+      // Tự custom nâng cao thuật toán phát hiện va chạm
+      collisionDetection={collisionDetectionStrategy}
+
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
