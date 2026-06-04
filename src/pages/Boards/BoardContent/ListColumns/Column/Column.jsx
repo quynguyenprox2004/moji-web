@@ -27,7 +27,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 
-function Column({ column }) {
+function Column({ column, createNewCard }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: column._id, data: { ...column } })
   const dndKitColumnStyles = {
@@ -54,13 +54,23 @@ function Column({ column }) {
 
   const [newCardTitle, setNewCardTitle] = React.useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { position: 'bottom-right' })
       return
     }
-    // console.log(newCardTitle)
-    // Gọi API ở đây...
+
+    // Tạo dữ liệu Card để gọi API
+    const newCardData = {
+      title: newCardTitle,
+      columnId: column._id
+    }
+
+    /**
+     * Gọi lên props func createNewColumn nằm ở component cha cao nhất (boards/_id.jsx)
+     * Về sau sẽ đưa dữ liệu Board ra ngoài Redux Global Store, thì lúc này có thể gọi luôn API ở đây là xong thay vì phải lần lượt giọi ngược lên những component chua phía trên.
+     */
+    await createNewCard(newCardData)
 
     // Đóng trạng thái thêm Card mới & Clear Input
     toggleOpenNewCardForm()
