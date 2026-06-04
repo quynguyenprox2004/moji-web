@@ -8,6 +8,7 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Menu from '@mui/material/Menu'
 import { capitalizeFirstLetter } from '~/utils/formatters'
+import Tooltip from '@mui/material/Tooltip'
 // Import các sub-components vừa tách
 import BoardUserGroup from './Menu/BoardUserGroup'
 import BoardInvite from './Menu/BoardInvite'
@@ -80,22 +81,23 @@ function BoardBar({ board }) {
     }}>
       {/* --- CỤM BÊN TRÁI: TÊN BOARD & TRẠNG THÁI --- */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 }, overflow: 'hidden' }}>
-        <Chip
-          sx={{
-            ...MENU_STYLES,
-            maxWidth: { xs: '220px', sm: '320px' },
-            '& .MuiChip-label': {
-              ...MENU_STYLES['& .MuiChip-label'],
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }
-          }}
-          icon={<DashboardIcon color='text.primary' />}
-          label={board?.title}
-          clickable
-        />
-
+        <Tooltip title={board?.description}>
+          <Chip
+            sx={{
+              ...MENU_STYLES,
+              maxWidth: { xs: '220px', sm: '320px' },
+              '& .MuiChip-label': {
+                ...MENU_STYLES['& .MuiChip-label'],
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }
+            }}
+            icon={<DashboardIcon color='text.primary' />}
+            label={board?.title}
+            clickable
+          />
+        </Tooltip>
         <Chip
           sx={{ ...MENU_STYLES, minWidth: 'fit-content' }}
           icon={<VpnLockIcon color='text.primary' />}
