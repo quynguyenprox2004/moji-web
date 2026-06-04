@@ -239,6 +239,7 @@ function Column({ column }) {
                 multiline
                 rows={2} // Mặc định hiển thị 2 dòng nhập liệu cho rộng rãi
                 autoFocus // Tự động lấy con trỏ chuột khi mở form
+                data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 sx={{
