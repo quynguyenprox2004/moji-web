@@ -30,7 +30,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   // https://dndkit.com/legacy/api-documentation/sensors/
   // const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -262,8 +262,14 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         // console.log('dndOrderedColumns: ', dndOrderedColumns)
         // console.log('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
 
-        // Cập nhật lại state columns ban đầu sau khi đã kéo thả
-        setOrderedColumns(dndOrderedColumns)
+        /**
+         * Gọi lên props func createNewColumn nằm ở component cha cao nhất (boards/_id.jsx)
+         * Về sau sẽ đưa dữ liệu Board ra ngoài Redux Global Store, thì lúc này có thể gọi luôn API ở đây là xong thay vì phải lần lượt giọi ngược lên những component chua phía trên.
+         */
+        moveColumns(dndOrderedColumns)
+
+        // Vẫn gọi update State ở đây để tránh delay hoặc Flickering giao diện lúc kéo thả cần phải chờ gọi API (small trick)
+        setOrderedColumns(dndOrderedColumns) // Cập nhật lại state columns ban đầu sau khi đã kéo thả
       }
     }
 
