@@ -22,7 +22,6 @@ import AddIcon from '@mui/icons-material/Add'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
-import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -46,15 +45,15 @@ function Column({ column, createNewCard }) {
   const handleClick = (event) => { setAnchorEl(event.currentTarget) }
   const handleClose = () => { setAnchorEl(null) }
 
-  const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
-
+  // Card đã được sắp xếp ở component cha cao nhất (boards/_id.jsx) (V71 Fix bug quan trọng)
+  const orderedCards = column.cards
 
   const [openNewCardForm, setOpenNewCardForm] = React.useState(false)
   const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
 
   const [newCardTitle, setNewCardTitle] = React.useState('')
 
-  const addNewCard = async () => {
+  const addNewCard = () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { position: 'bottom-right' })
       return
@@ -70,7 +69,7 @@ function Column({ column, createNewCard }) {
      * Gọi lên props func createNewColumn nằm ở component cha cao nhất (boards/_id.jsx)
      * Về sau sẽ đưa dữ liệu Board ra ngoài Redux Global Store, thì lúc này có thể gọi luôn API ở đây là xong thay vì phải lần lượt giọi ngược lên những component chua phía trên.
      */
-    await createNewCard(newCardData)
+    createNewCard(newCardData)
 
     // Đóng trạng thái thêm Card mới & Clear Input
     toggleOpenNewCardForm()
