@@ -1,4 +1,5 @@
 import React from 'react'
+import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import ListCards from './ListCards/ListCards'
 import Typography from '@mui/material/Typography'
@@ -55,7 +56,7 @@ function Column({ column }) {
 
   const addNewCard = () => {
     if (!newCardTitle) {
-      // console.error('Please enter Card Title!')
+      toast.error('Please enter Card Title!', { position: 'bottom-right' })
       return
     }
     // console.log(newCardTitle)
