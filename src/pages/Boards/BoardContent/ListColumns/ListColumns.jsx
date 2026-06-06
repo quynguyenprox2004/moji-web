@@ -178,6 +178,7 @@ function ListColumns({ columns }) {
             {/* Cụm nút hành động bên dưới */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Button
+                className="interceptor-loading"
                 onClick={addNewColumn}
                 variant="contained"
                 color="success" // Ép màu xanh chuẩn nút Submit hành động
