@@ -25,9 +25,22 @@ import CloseIcon from '@mui/icons-material/Close'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useConfirm } from 'material-ui-confirm'
+import {
+  createNewCardAPI,
+  deleteColumnDetailsAPI
+} from '~/apis'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { cloneDeep } from 'lodash'
 
 
-function Column({ column, createNewCard, deleteColumnDetails }) {
+function Column({ column }) {
+  const dispatch = useDispatch()
+  const board = useSelector(selectCurrentActiveBoard)
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: column._id, data: { ...column } })
   const dndKitColumnStyles = {
@@ -54,7 +67,7 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
 
   const [newCardTitle, setNewCardTitle] = React.useState('')
 
-  const addNewCard = () => {
+  const addNewCard = async () => {
     if (!newCardTitle) {
       toast.error('Please enter Card Title!', { position: 'bottom-right' })
       return
@@ -66,11 +79,33 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       columnId: column._id
     }
 
-    /**
-     * Gọi lên props func createNewColumn nằm ở component cha cao nhất (boards/_id.jsx)
-     * Về sau sẽ đưa dữ liệu Board ra ngoài Redux Global Store, thì lúc này có thể gọi luôn API ở đây là xong thay vì phải lần lượt giọi ngược lên những component chua phía trên.
-     */
-    createNewCard(newCardData)
+    // Gọi API tạo mới Card và làm lại dữ liệu State Board
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+
+    // Cập nhật state board
+    // Phía Front-end chúng ta phải tự làm đúng lại state data board (thay vì phải gọi lại api fetchBoardDetailsAPI)
+    // Lưu ý: cách làm này phụ thuộc vào tùy lựa chọn và đặc thù dự án, có nơi thì BE sẽ hỗ trợ trả về luôn toàn bộ Board dù đây có là api tạo Column hay Card đi chăng nữa. => Lúc này FE sẽ nhàn hơn.
+
+    // Tương tự hàm createNewColumn nên chỗ này dùng cloneDeep
+    // const newBoard = { ...board }
+    const newBoard = cloneDeep(board)
+    const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
+    if (columnToUpdate) {
+      // Nếu column rỗng: bản chất là đang chứa một cái Placeholder card (V37.2)
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else {
+        // Ngược lại Column đã có data thì push vào cuối mảng
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
+    }
+    // setBoard(newBoard)
+    dispatch(updateCurrentActiveBoard(newBoard))
 
     // Đóng trạng thái thêm Card mới & Clear Input
     toggleOpenNewCardForm()
@@ -87,11 +122,19 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       cancellationText: 'Cancel'
       // buttonOrder: ['cancel', 'confirm']
     }).then(() => {
-      /**
-       * Gọi lên props func deleteColumnDetails nằm ở component cha cao nhất (boards/_id.jsx)
-       * Về sau sẽ đưa dữ liệu Board ra ngoài Redux Global Store, thì lúc này có thể gọi luôn API ở đây là xong thay vì phải lần lượt giọi ngược lên những component chua phía trên.
-       */
-      deleteColumnDetails(column._id)
+      // Update cho chuẩn dữ liệu state Board
+
+      // Tương tự đoạn xử lý chỗ hàm moveColumns nên không ảnh hưởng Redux Toolkit Immutability gì ở đây cả.
+      const newBoard = { ...board }
+      newBoard.columns = newBoard.columns.filter(c => c._id !== column._id)
+      newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== column._id)
+      // setBoard(newBoard)
+      dispatch(updateCurrentActiveBoard(newBoard))
+
+      // Gọi API xử lý phía BE
+      deleteColumnDetailsAPI(column._id).then(res => {
+        toast.success(res?.deleteResult)
+      })
     }).catch(() => { })
   }
 
