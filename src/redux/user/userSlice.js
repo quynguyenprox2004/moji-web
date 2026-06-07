@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import authorizedAxiosInstance from '~/utils/authorizeAxios'
 import { API_ROOT } from '~/utils/constants'
+import { toast } from 'react-toastify'
 
 // Khởi tạo giá trị State của một cái Slice trong redux
 const initialState = {
@@ -14,6 +15,17 @@ export const loginUserAPI = createAsyncThunk(
   async (data) => {
     const response = await authorizedAxiosInstance.post(`${API_ROOT}/v1/users/login`, data)
     // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
+    return response.data
+  }
+)
+
+export const logoutUserAPI = createAsyncThunk(
+  'user/logoutUserAPI',
+  async (showSuccessMessage = true) => {
+    const response = await authorizedAxiosInstance.delete(`${API_ROOT}/v1/users/logout`)
+    if (showSuccessMessage) {
+      toast.success('Logged out successfully!')
+    }
     return response.data
   }
 )
@@ -32,6 +44,13 @@ export const userSlice = createSlice({
 
       // Update lại dữ liệu của cái currentUser
       state.currentUser = user
+    })
+    builder.addCase(logoutUserAPI.fulfilled, (state) => {
+      /**
+      * API logout sau khi gọi thành công thì sẽ clear thông tin currentUser về null ở đây
+      * Kết hợp ProtectedRoute đã làm ở App.js => code sẽ điều hướng chuẩn về trang Login
+      */
+      state.currentUser = null
     })
   }
 })

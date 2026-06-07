@@ -84,9 +84,6 @@ function AppBar() {
       <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
         <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> Profile
       </MenuItem>
-      <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
-        <Avatar sx={{ width: 28, height: 28, mr: 1.5 }} /> My account
-      </MenuItem>
       <Divider sx={{ my: 0.5 }} />
       <MenuItem onClick={handleMenuClose} sx={{ fontSize: '0.875rem' }}>
         <ListItemIcon sx={{ color: 'text.primary' }}>
