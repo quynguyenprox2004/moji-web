@@ -387,7 +387,7 @@ function BoardContent({
       <Box sx={{
         width: '100%',
         height: (theme) => theme.moji.boardContentHeight,
-        backgroundColor: 'background.default',
+        backgroundColor: 'background.boardContent',
 
         // Responsive Padding: Trên mobile (xs) thu nhỏ khoảng cách top/bottom xuống 6px để tối ưu không gian dọc
         p: { xs: '6px 0', sm: '10px 0' },

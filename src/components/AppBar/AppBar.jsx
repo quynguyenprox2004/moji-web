@@ -176,7 +176,8 @@ function AppBar() {
           color: 'text.primary',
           borderBottom: '1px solid',
           borderColor: (theme) => theme.palette.divider,
-          boxShadow: 'none'
+          boxShadow: 'none',
+          backgroundImage: 'none'
         }}
       >
         <Toolbar sx={{ minHeight: '100% !important', px: { xs: '8px !important', sm: '12px !important' } }}>
@@ -262,9 +263,12 @@ function AppBar() {
               </Badge>
             </Tooltip>
 
-            <Tooltip title="Help">
-              <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'text.primary' }} />
-            </Tooltip>
+
+            <Link to="/boards"> {/**Tạm fix về trang board list ở đây */}
+              <Tooltip title="Help">
+                <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'text.primary' }} />
+              </Tooltip>
+            </Link>
 
             {/* Gọi Profiles động cấp Desktop */}
             <Profiles />

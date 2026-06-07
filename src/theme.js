@@ -22,10 +22,11 @@ const theme = extendTheme({
           contrastText: '#ffffff'
         },
         background: {
-          default: '#DCE9FE',
+          default: '#FFFFFF',
           paper: '#FFFFFF',
           appBar: '#FFFFFF',
           boardBar: '#EBF3FE',
+          boardContent: '#DCE9FE',
           columns: '#F1F2F4'
         },
         text: {
@@ -41,10 +42,11 @@ const theme = extendTheme({
           contrastText: '#ffffff'
         },
         background: {
-          default: '#1B2C47',
+          default: '#1F1F21',
           paper: '#1F1F21',
           appBar: '#1F1F21',
           boardBar: '#13223A',
+          boardContent: '#1B2C47',
           columns: '#101204'
         },
         text: {
