@@ -25,6 +25,7 @@ import Settings from '@mui/icons-material/Settings'
 import Logout from '@mui/icons-material/Logout'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
+import { Link } from 'react-router-dom'
 
 // IMPORT COMPONENT PROFILES (DÙNG CHO DESKTOP)
 import Profiles from './Menu/Profiles'
@@ -181,12 +182,14 @@ function AppBar() {
         <Toolbar sx={{ minHeight: '100% !important', px: { xs: '8px !important', sm: '12px !important' } }}>
 
           {/* Logo Area */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}>
-            <SvgIcon component={MojiIcon} fontSize="medium" inheritViewBox />
-            <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', letterSpacing: '1px' }}>
-              MOJI
-            </Typography>
-          </Box>
+          <Link to="/" style={{ color: 'inherit' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, cursor: 'pointer' }}>
+              <SvgIcon component={MojiIcon} fontSize="medium" inheritViewBox />
+              <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' }, fontWeight: 'bold', letterSpacing: '1px' }}>
+                MOJI
+              </Typography>
+            </Box>
+          </Link>
 
           {/* Ô Tìm kiếm */}
           <TextField

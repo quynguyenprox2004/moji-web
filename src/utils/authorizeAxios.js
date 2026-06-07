@@ -63,7 +63,7 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
   // Trường hợp 2: Nếu như nhận mã 410 từ BE, thì sẽ gọi api refresh token để làm mới accessToken
   //Đầu tiên lấy được các request API đang bị lỗi trong qua error.config
   const originalRequests = error.config
-  console.log('originalRequests: ', originalRequests)
+  // console.log('originalRequests: ', originalRequests)
   if (error.response.status === 410 && !originalRequests._retry) { // có thể không dùng _retry cũng được vì cái refreshTokenPromise để check là đủ rồi.
     // Gán thêm một giá trị _retry luôn = true trong khoảng thời gian chờ, đảm bảo việc refresh token này chỉ luôn gọi 1 lần tại 1 thời điểm (nhìn lại điều kiện if ngay phía trên)
     originalRequests._retry = true
