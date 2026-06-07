@@ -86,7 +86,7 @@ function Boards() {
   return (
     <Container disableGutters maxWidth={false}>
       <AppBar />
-      <Box sx={{ paddingX: 2, my: 4 }}>
+      <Box sx={{ px: 2, my: 2 }}>
         <Grid container spacing={2}>
           <Grid xs={12} sm={3}>
             <Stack direction="column" spacing={1}>
@@ -110,7 +110,7 @@ function Boards() {
           </Grid>
 
           <Grid xs={12} sm={9}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 3 }}>YOUR WORKSPACES</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>YOUR WORKSPACES</Typography>
 
             {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}
             {boards?.length === 0 &&
@@ -119,16 +119,16 @@ function Boards() {
 
             {/* Trường hợp gọi API và có boards trong Database trả về thì render danh sách boards */}
             {boards?.length > 0 &&
-              <Grid container spacing={2}>
+              <Grid container spacing={2} columns={{ xs: 2, sm: 3, md: 4 }}>
                 {boards.map(b =>
-                  <Grid xs={2} sm={3} md={4} key={b._id}>
-                    <Card sx={{ width: '250px' }}>
+                  <Grid xs={1} sm={1} md={1} key={b._id}>
+                    <Card sx={{ width: '100%', mx: 'auto' }}>
                       {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board */}
                       {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
-                      <Box sx={{ height: '50px', backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)') }}></Box>
+                      <Box sx={{ height: '10px', backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)') }}></Box>
 
                       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-                        <Typography gutterBottom variant="h6" component="div">
+                        <Typography gutterBottom variant="h6" component="div" sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                           {b?.title}
                         </Typography>
                         <Typography
@@ -145,10 +145,12 @@ function Boards() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'flex-end',
+                            borderRadius: '10px',
+                            backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)'),
                             color: 'primary.main',
                             '&:hover': { color: 'primary.light' }
                           }}>
-                          Go to board <ArrowRightIcon fontSize="small" />
+                          Go to board <ArrowRightIcon fontSize="medium" />
                         </Box>
                       </CardContent>
                     </Card>
@@ -159,7 +161,7 @@ function Boards() {
 
             {/* Trường hợp gọi API và có totalBoards trong Database trả về thì render khu vực phân trang  */}
             {(totalBoards > 0) &&
-              <Box sx={{ my: 3, pr: 5, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Box sx={{ my: 2, pr: 5, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                 <Pagination
                   size="large"
                   color="secondary"
