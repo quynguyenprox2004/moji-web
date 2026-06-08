@@ -39,9 +39,14 @@ import {
   selectCurrentActiveCard,
   updateCurrentActiveCard
 } from '~/redux/activeCard/activeCardSlice'
-import { updateCardDetailsAPI } from '~/apis'
+import { updateCardDetailsAPI, deleteCardDetailsAPI } from '~/apis'
 import { updateCardInBoard } from '~/redux/activeBoard/activeBoardSlice'
-
+import { useConfirm } from 'material-ui-confirm'
+import {
+  updateCurrentActiveBoard,
+  selectCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice' // Bổ sung để lấy và cập nhật board
+import { cloneDeep } from 'lodash'
 import { styled } from '@mui/material/styles'
 const SidebarItem = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -63,12 +68,16 @@ const SidebarItem = styled(Box)(({ theme }) => ({
   }
 }))
 
+
 /**
  * Note: Modal là một low-component mà bọn MUI sử dụng bên trong những thứ như Dialog, Drawer, Menu, Popover. Ở đây dĩ nhiên chúng ta có thể sử dụng Dialog cũng không thành vấn đề gì, nhưng sẽ sử dụng Modal để dễ linh hoạt tùy biến giao diện từ con số 0 cho phù hợp với mọi nhu cầu nhé.
  */
 function ActiveCard() {
   const dispatch = useDispatch()
   const activeCard = useSelector(selectCurrentActiveCard)
+
+  // 📢 LẤY DỮ LIỆU BOARD TỪ REDUX RA ĐỂ XỬ LÝ LỌC CARD
+  const board = useSelector(selectCurrentActiveBoard)
   // Không dùng biến State để check đóng mở Model nữa vì chúng ta sẽ check bên Board/_id.jsx
   // const [isOpen, setIsOpen] = useState(true)
   // const handleOpenModal = () => setIsOpen(true)
@@ -102,7 +111,7 @@ function ActiveCard() {
   }
 
   const onUploadCardCover = (event) => {
-    console.log(event.target?.files[0])
+    // console.log(event.target?.files[0])
     const error = singleFileValidator(event.target?.files[0])
     if (error) {
       toast.error(error)
@@ -117,6 +126,42 @@ function ActiveCard() {
       { pending: 'Updating...' }
     )
   }
+  // Xử lý xóa Card chuẩn chỉnh
+  const confirmDeleteCard = useConfirm()
+  const handleDeleteCard = () => {
+    confirmDeleteCard({
+      title: 'Delete Card?',
+      description: 'This action will permanently delete your Card! Are you sure?',
+      confirmationText: 'Confirm',
+      cancellationText: 'Cancel'
+    }).then(() => {
+      // 1. Tạo bản sao sâu cho board để tránh lỗi read-only của Redux
+      const newBoard = cloneDeep(board)
+
+      // 2. Tìm cái Column đang chứa cái Card muốn xóa này (Dùng activeCard.columnId)
+      const targetColumn = newBoard.columns.find(c => c._id === activeCard.columnId)
+
+      if (targetColumn) {
+        // Lọc bỏ Card ra khỏi mảng cards của Column đó
+        targetColumn.cards = targetColumn.cards.filter(c => c._id !== activeCard._id)
+
+        // Lọc bỏ cardId ra khỏi mảng cardOrderIds của Column đó
+        targetColumn.cardOrderIds = targetColumn.cardOrderIds.filter(_id => _id !== activeCard._id)
+      }
+
+      // 3. Cập nhật lại dữ liệu Board mới vào Redux Store để giao diện bên dưới tự động mất Card
+      dispatch(updateCurrentActiveBoard(newBoard))
+
+      // 4. Gọi API xuống Backend để thực hiện xóa hẳn trong Database
+      deleteCardDetailsAPI(activeCard._id).then(res => {
+        toast.success(res?.deleteResult || 'Card deleted successfully!')
+      })
+
+      // 5. 🔥 QUAN TRỌNG: Tự động đóng Modal chi tiết card lại sau khi xóa thành công
+      handleCloseModal()
+
+    }).catch(() => { })
+  }
 
   return (
     <Modal
@@ -126,15 +171,15 @@ function ActiveCard() {
       sx={{ overflowY: 'auto' }}>
       <Box sx={{
         position: 'relative',
-        width: 900,
+        width: { xs: '95vw', sm: '900px' }, // responsive width
         maxWidth: 900,
         bgcolor: 'white',
         boxShadow: 24,
         borderRadius: '8px',
         border: 'none',
         outline: 0,
-        padding: '40px 20px 20px',
-        margin: '50px auto',
+        padding: { xs: '40px 12px 16px', sm: '40px 20px 20px' }, // giảm padding mobile
+        margin: { xs: '20px auto', sm: '50px auto' }, // giảm margin top mobile
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff'
       }}>
         <Box sx={{
@@ -148,10 +193,16 @@ function ActiveCard() {
 
         {activeCard?.cover &&
           <Box sx={{ mb: 4 }}>
-            <img
-              style={{ width: '100%', height: '320px', borderRadius: '6px', objectFit: 'cover' }}
-              src="https://trungquandev.com/wp-content/uploads/2023/08/fit-banner-for-facebook-blog-trungquandev-codetq.png"
+            <Box
+              component="img"
+              src={activeCard?.cover}
               alt="card-cover"
+              sx={{
+                width: '100%',
+                height: { xs: '160px', sm: '320px' }, // thấp hơn trên mobile
+                borderRadius: '6px',
+                objectFit: 'cover'
+              }}
             />
           </Box>
         }
@@ -161,7 +212,7 @@ function ActiveCard() {
 
           {/* Feature 01: Xử lý tiêu đề của Card */}
           <ToggleFocusInput
-            inputFontSize='22px'
+            inputFontSize='20px'
             value={activeCard?.title}
             onChangedValue={onUpdateCardTitle} />
         </Box>
@@ -208,7 +259,12 @@ function ActiveCard() {
             <Typography sx={{ fontWeight: '600', color: 'primary.main', mb: 1 }}>Actions</Typography>
             <Stack direction="column" spacing={1}>
 
-              <SidebarItem><ArchiveOutlinedIcon fontSize="small" />Archive</SidebarItem>
+              <SidebarItem
+                onClick={handleDeleteCard}
+                sx={{ '&:hover': { color: 'warning.dark' } }}>
+                <ArchiveOutlinedIcon fontSize="small" />
+                Remove
+              </SidebarItem>
 
             </Stack>
           </Grid>

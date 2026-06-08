@@ -5,7 +5,6 @@ import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 // Grid: https://v5.mui.com/material-ui/react-grid2/
-
 import Grid from '@mui/material/Unstable_Grid2'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
@@ -22,6 +21,8 @@ import { Link, useLocation } from 'react-router-dom'
 import SidebarCreateBoardModal from './create'
 import { fetchBoardsAPI } from '~/apis'
 import { DEFAULT_PAGE, DEFAULT_ITEMS_PER_PAGE } from '~/utils/constants'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
 
 import { styled } from '@mui/material/styles'
 // Styles của mấy cái Sidebar item menu
@@ -42,11 +43,16 @@ const SidebarItem = styled(Box)(({ theme }) => ({
   }
 }))
 
+
 function Boards() {
   // Số lượng bản ghi boards hiển thị tối đa trên 1 page tùy dự án (thường sẽ là 12 cái)
   const [boards, setBoards] = useState(null)
   // Tổng toàn bộ số lượng bản ghi boards có trong Database mà phía BE trả về để FE dùng tính toán phân trang
   const [totalBoards, setTotalBoards] = useState(null)
+
+  // Trong component:
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   // Xử lý phân trang từ url với MUI: https://v5.mui.com/material-ui/react-pagination/
   const location = useLocation()
@@ -67,12 +73,6 @@ function Boards() {
   }
 
   useEffect(() => {
-    // // Fake tạm 16 cái item thay cho boards
-    // // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-    // setBoards([...Array(16)].map((_, i) => i))
-    // // Fake tạm giả sử trong Database trả về có tổng 100 bản ghi boards
-    // setTotalBoards(100)
-
     // Mỗi khi cái url thay đổi vi dụ như chúng ta chuyển trang, thì cái location.search lấy từ hook useLocation của react-router-dom cũng thay đổi theo, đồng nghĩa hàm useEffect sẽ chạy lại và fetch lại API theo đúng page mới vì cái location.search đã nằm trong dependencies của useEffect
     // console.log(location.search)
 
@@ -96,7 +96,11 @@ function Boards() {
       <Box sx={{ px: 2, my: 2 }}>
         <Grid container spacing={2}>
           <Grid xs={12} sm={3}>
-            <Stack direction="column" spacing={1}>
+            <Stack
+              direction={{ xs: 'row', sm: 'column' }} // nằm ngang trên mobile
+              spacing={1}
+              sx={{ overflowX: { xs: 'auto', sm: 'unset' } }}
+            >
               <SidebarItem className="active">
                 <SpaceDashboardIcon fontSize="small" />
                 Boards
@@ -116,8 +120,8 @@ function Boards() {
             </Stack>
           </Grid>
 
-          <Grid xs={12} sm={9}>
-            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>YOUR WORKSPACES</Typography>
+          <Grid xs={12} sm={9} sx={{ display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 140px)' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, fontSize: { xs: '1rem', sm: '1.25rem' } }}>YOUR WORKSPACES</Typography>
 
             {/* Trường hợp gọi API nhưng không tồn tại cái board nào trong Database trả về */}
             {boards?.length === 0 &&
@@ -129,35 +133,57 @@ function Boards() {
               <Grid container spacing={2} columns={{ xs: 2, sm: 3, md: 4 }}>
                 {boards.map(b =>
                   <Grid xs={1} sm={1} md={1} key={b._id}>
-                    <Card sx={{ width: '100%', mx: 'auto' }}>
-                      {/* Ý tưởng mở rộng về sau làm ảnh Cover cho board */}
-                      {/* <CardMedia component="img" height="100" image="https://picsum.photos/100" /> */}
-                      <Box sx={{ height: '3px', backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)') }}></Box>
-
+                    <Card sx={{
+                      width: '100%',
+                      borderRadius: '12px',
+                      border: '0.5px solid',
+                      borderColor: 'divider',
+                      boxShadow: 'none',
+                      transition: 'border-color .15s',
+                      '&:hover': { borderColor: 'primary.main' }
+                    }}>
+                      {/* Accent bar thay thế box xám cũ */}
+                      <Box sx={{ height: '22px', backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)') }} />
                       <CardContent sx={{ p: 1.5, '&:last-child': { p: 1.5 } }}>
-                        <Typography gutterBottom variant="h6" component="div" sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{ fontWeight: 600, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', mb: 0.5 }}
+                        >
                           {b?.title}
                         </Typography>
                         <Typography
                           variant="body2"
                           color="text.secondary"
-                          sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                          sx={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', mb: 1.5, fontSize: '12px' }}
+                        >
                           {b?.description}
                         </Typography>
-                        <Box
-                          component={Link}
-                          to={`/boards/${b._id}`}
-                          sx={{
-                            mt: 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                            borderRadius: '10px',
-                            backgroundColor: (theme) => (theme.palette.mode === 'dark' ? 'rgb(143, 184, 246)' : 'rgba(0, 0, 0, 0.16)'),
-                            color: 'primary.main',
-                            '&:hover': { color: 'primary.light' }
-                          }}>
-                          Go to board <ArrowRightIcon fontSize="medium" />
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          {/* Badge Private/Public */}
+                          <Typography
+                            variant="caption"
+                            sx={{
+                              px: 1, py: 0.4,
+                              borderRadius: '20px',
+                              backgroundColor: 'action.hover',
+                              color: 'text.secondary',
+                              fontSize: '11px'
+                            }}
+                          >
+                            {b?.type === 'public' ? 'Public' : 'Private'}
+                          </Typography>
+                          {/* Link text thay box xấu */}
+                          <Box
+                            component={Link}
+                            to={`/boards/${b._id}`}
+                            sx={{
+                              display: 'flex', alignItems: 'center', gap: 0.3,
+                              fontSize: '12px', color: 'primary.main', textDecoration: 'none',
+                              '&:hover': { color: 'primary.dark' }
+                            }}
+                          >
+                            Open <ArrowRightIcon sx={{ fontSize: 16 }} />
+                          </Box>
                         </Box>
                       </CardContent>
                     </Card>
@@ -168,17 +194,22 @@ function Boards() {
 
             {/* Trường hợp gọi API và có totalBoards trong Database trả về thì render khu vực phân trang  */}
             {(totalBoards > 0) &&
-              <Box sx={{ my: 2, pr: 5, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <Box sx={{
+                mt: 'auto', // ← đẩy xuống đáy
+                pt: 2,
+                borderTop: '0.5px solid',
+                borderColor: 'divider',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center' // ← căn giữa thay vì flex-end
+              }}>
                 <Pagination
-                  size="large"
+                  size={isMobile ? 'small' : 'medium'}
                   color="primary"
                   showFirstButton
                   showLastButton
-                  // Giá trị prop count của component Pagination là để hiển thị tổng số lượng page, công thức là lấy Tổng số lượng bản ghi chia cho số lượng bản ghi muốn hiển thị trên 1 page (ví dụ thường để 12, 24, 26, 48...vv). sau cùng là làm tròn số lên bằng hàm Math.ceil
                   count={Math.ceil(totalBoards / DEFAULT_ITEMS_PER_PAGE)}
-                  // Giá trị của page hiện tại đang đứng
                   page={page}
-                  // Render các page item và đồng thời cũng là những cái link để chúng ta click chuyển trang
                   renderItem={(item) => (
                     <PaginationItem
                       component={Link}

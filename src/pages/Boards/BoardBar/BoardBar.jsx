@@ -106,22 +106,18 @@ function BoardBar({ board }) {
             alignItems: 'center',
             gap: 1,
             cursor: 'pointer',
-            px: '12px',
-            py: '4px',
-            borderRadius: '4px',
-            // Tạo hiệu ứng hover nhẹ quanh khu vực tiêu đề giống như hover cái Chip cũ
-            '&:hover': {
-              backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#424E61' : '#C3CBD5'
-            }
+            // px: '12px',
+            // py: '4px',
+            borderRadius: '4px'
           }}>
             <DashboardIcon fontSize="small" sx={{ color: 'text.primary' }} />
             <ToggleFocusInput
               value={board?.title}
               onChangedValue={onUpdateBoardTitle}
-              inputFontSize="14px"
+              inputFontSize="16px"
               sx={{
                 // Custom CSS riêng cho Input tại BoardBar để nó không chiếm diện tích bừa bãi
-                maxWidth: { xs: '160px', sm: '260px' },
+                maxWidth: { xs: '160px', sm: '240px' },
                 '& .MuiOutlinedInput-root': {
                   backgroundColor: 'transparent',
                   '& fieldset': { borderColor: 'transparent' }
@@ -141,16 +137,17 @@ function BoardBar({ board }) {
           label={capitalizeFirstLetter(board?.type)}
           clickable
         />
-      </Box>
+      </Box >
 
       {/* --- CỤM BÊN PHẢI: DESKTOP VIEW --- */}
-      <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1 }}>
+      <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1 }
+      }>
         <BoardUserGroup />
         <BoardInvite fullWidth={false} size="medium" />
-      </Box>
+      </Box >
 
       {/* --- CỤM BÊN PHẢI: MOBILE VIEW --- */}
-      <Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center' }}>
+      < Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center' }}>
         <IconButton
           size="small"
           aria-controls={mobileMenuId}
@@ -160,10 +157,10 @@ function BoardBar({ board }) {
         >
           <MoreHorizIcon />
         </IconButton>
-      </Box>
+      </Box >
 
       {renderMobileMenu}
-    </Box>
+    </Box >
   )
 }
 
