@@ -13,7 +13,8 @@ import { cloneDeep } from 'lodash'
 import {
   fetchBoardDetailsAPI,
   updateCurrentActiveBoard,
-  selectCurrentActiveBoard
+  selectCurrentActiveBoard,
+  clearCurrentActiveBoard
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
@@ -33,6 +34,10 @@ function Board() {
   useEffect(() => {
     // Call API
     dispatch(fetchBoardDetailsAPI(boardId))
+    // Magic ở đây: Cleanup function hoạt động khi component bị unmount
+    return () => {
+      dispatch(clearCurrentActiveBoard())
+    }
   }, [dispatch, boardId])
 
   /**

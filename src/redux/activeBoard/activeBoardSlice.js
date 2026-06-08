@@ -38,6 +38,10 @@ export const activeBoardSlice = createSlice({
       // Update lại dữ liệu của cái currentActiveBoard
       state.currentActiveBoard = board
     },
+    // THÊM ACTION DỌN DẸP DỮ LIỆU Ở ĐÂY
+    clearCurrentActiveBoard: (state) => {
+      state.currentActiveBoard = null
+    },
     updateCardInBoard: (state, action) => {
       // Update nested data
       // https://redux-toolkit.js.org/usage/immer-reducers
@@ -50,7 +54,11 @@ export const activeBoardSlice = createSlice({
         if (card) {
           // card.title = incomingCard.title
           // card['title'] = incomingCard['title']
-
+          /**
+           * Giải thích:
+           * Dùng Object.key để lấy toàn bộ các properties (keys) của incomingCard về một Array rồi forEach nó ra
+           * Sau đó tùy vào trường hợp cần thì kiểm tra thêm còn không thì cập nhật ngược lại giá trị vào card luôn như bên dưới.
+           */
           Object.keys(incomingCard).forEach(key => {
             card[key] = incomingCard[key]
           })
@@ -86,7 +94,7 @@ export const activeBoardSlice = createSlice({
 
 // Actions: Là nơi dành cho các components bên dưới gọi bằng dispatch() tới nó để cập nhật lại dữ liệu thông qua reducer (chạy đồng bộ)
 // Để ý ở trên thì không thấy properties actions đâu cả, bởi vì những cái actions này đơn giản là được thằng redux tạo tự động theo tên của reducer nhé.
-export const { updateCurrentActiveBoard, updateCardInBoard } = activeBoardSlice.actions
+export const { updateCurrentActiveBoard, updateCardInBoard, clearCurrentActiveBoard } = activeBoardSlice.actions
 
 // Selectors: Là nơi dành cho các components bên dưới gọi bằng hook useSelector() để lấy dữ liệu từ trong kho redux store ra sử dụng
 export const selectCurrentActiveBoard = (state) => {

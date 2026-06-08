@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-// import DashboardIcon from '@mui/icons-material/Dashboard'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import IconButton from '@mui/material/IconButton'
@@ -11,12 +11,11 @@ import { capitalizeFirstLetter } from '~/utils/formatters'
 import Tooltip from '@mui/material/Tooltip'
 // Import các sub-components vừa tách
 import BoardUserGroup from './BoardUserGroup'
-import BoardInvite from './Menu/BoardInvite'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  selectCurrentActiveBoard,
-  updateCurrentActiveBoard
-} from '~/redux/activeBoard/activeBoardSlice'
+import BoardInvite from './BoardInvite'
+
+// MỞ COMMENT CÁC IMPORT ĐÃ BỊ ẨN
+import { useDispatch } from 'react-redux'
+import { updateCurrentActiveBoard } from '~/redux/activeBoard/activeBoardSlice'
 import { updateBoardDetailsAPI } from '~/apis'
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 
@@ -35,7 +34,6 @@ const MENU_STYLES = {
 
 function BoardBar({ board }) {
   const dispatch = useDispatch()
-  const activeBoard = useSelector(selectCurrentActiveBoard)
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
@@ -62,14 +60,12 @@ function BoardBar({ board }) {
         }
       }}
     >
-      {/* ITEM 1: TÁI SỬ DỤNG CHUNG BOARDUSERGROUP TRÊN MOBILE (Cấu hình size nhỏ hơn xíu) */}
       <MenuItem disableRipple sx={{ bgcolor: 'transparent', '&:hover': { bgcolor: 'transparent' }, p: 0, mb: 1.5 }}>
         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <BoardUserGroup max={5} size={32} fontSize={14} />
         </Box>
       </MenuItem>
 
-      {/* ITEM 2: TÁI SỬ DỤNG CHUNG BOARDINVITE TRÊN MOBILE (Bật fullWidth và size nhỏ) */}
       <MenuItem disableRipple sx={{ bgcolor: 'transparent', '&:hover': { bgcolor: 'transparent' }, p: 0 }} onClick={handleMobileMenuClose}>
         <Box sx={{ width: '100%' }}>
           <BoardInvite fullWidth size="small" />
@@ -78,16 +74,13 @@ function BoardBar({ board }) {
     </Menu>
   )
 
+  // Hàm xử lý gọi API cập nhật tên Board (Sử dụng luôn prop `board` từ cha truyền xuống cho chuẩn)
   const onUpdateBoardTitle = async (newTitle) => {
-    const updatedBoard = await updateBoardDetailsAPI(
-      activeBoard._id,
-      {
-        title: newTitle.trim()
-      }
-    )
+    const updatedBoard = await updateBoardDetailsAPI(board._id, { title: newTitle })
 
+    // Cập nhật lại dữ liệu Board trong Redux
     dispatch(updateCurrentActiveBoard({
-      ...activeBoard,
+      ...board,
       ...updatedBoard
     }))
   }
@@ -105,29 +98,43 @@ function BoardBar({ board }) {
     }}>
       {/* --- CỤM BÊN TRÁI: TÊN BOARD & TRẠNG THÁI --- */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 }, overflow: 'hidden' }}>
-        <Tooltip title={board?.description}>
-          {/* <Chip
-            sx={{
-              ...MENU_STYLES,
-              maxWidth: { xs: '220px', sm: '320px' },
-              '& .MuiChip-label': {
-                ...MENU_STYLES['& .MuiChip-label'],
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-              }
-            }}
-            icon={<DashboardIcon color='text.primary' />}
-            label={board?.title}
-            clickable
-          /> */}
-          <Box>
+
+        {/* FIX LỖI TOOLTIP: Bọc toàn bộ cụm Title vào 1 thẻ Box duy nhất để Tooltip không bị crash */}
+        <Tooltip title={board?.description || 'Board Description'}>
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            cursor: 'pointer',
+            px: '12px',
+            py: '4px',
+            borderRadius: '4px',
+            // Tạo hiệu ứng hover nhẹ quanh khu vực tiêu đề giống như hover cái Chip cũ
+            '&:hover': {
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#424E61' : '#C3CBD5'
+            }
+          }}>
+            <DashboardIcon fontSize="small" sx={{ color: 'text.primary' }} />
             <ToggleFocusInput
-              value={activeBoard?.title}
+              value={board?.title}
               onChangedValue={onUpdateBoardTitle}
+              inputFontSize="14px"
+              sx={{
+                // Custom CSS riêng cho Input tại BoardBar để nó không chiếm diện tích bừa bãi
+                maxWidth: { xs: '160px', sm: '260px' },
+                '& .MuiOutlinedInput-root': {
+                  backgroundColor: 'transparent',
+                  '& fieldset': { borderColor: 'transparent' }
+                },
+                '& .MuiOutlinedInput-root.Mui-focused': {
+                  backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#33485D' : 'white',
+                  '& fieldset': { borderColor: 'primary.main' }
+                }
+              }}
             />
           </Box>
         </Tooltip>
+
         <Chip
           sx={{ ...MENU_STYLES, minWidth: 'fit-content' }}
           icon={<VpnLockIcon color='text.primary' />}
@@ -136,18 +143,13 @@ function BoardBar({ board }) {
         />
       </Box>
 
-      {/* --- CỤM BÊN PHẢI: DESKTOP VIEW (ẨN TRÊN XS, HIỂN THỊ TRÊN SM) --- */}
-      <Box sx={{
-        display: { xs: 'none', sm: 'flex' },
-        alignItems: 'center',
-        gap: 1
-      }}>
-        {/* Gọi gọn gàng hai Component con bằng các cấu hình tham số mặc định */}
+      {/* --- CỤM BÊN PHẢI: DESKTOP VIEW --- */}
+      <Box sx={{ display: { xs: 'none', sm: 'flex' }, alignItems: 'center', gap: 1 }}>
         <BoardUserGroup />
         <BoardInvite fullWidth={false} size="medium" />
       </Box>
 
-      {/* --- CỤM BÊN PHẢI: MOBILE VIEW (CHỈ HIỂN THỊ NÚT 3 CHẤM TRÊN XS) --- */}
+      {/* --- CỤM BÊN PHẢI: MOBILE VIEW --- */}
       <Box sx={{ display: { xs: 'flex', sm: 'none' }, alignItems: 'center' }}>
         <IconButton
           size="small"
@@ -160,7 +162,6 @@ function BoardBar({ board }) {
         </IconButton>
       </Box>
 
-      {/* Khối JSX Render Menu rút gọn */}
       {renderMobileMenu}
     </Box>
   )

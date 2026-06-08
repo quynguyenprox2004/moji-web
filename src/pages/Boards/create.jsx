@@ -84,7 +84,8 @@ function SidebarCreateBoardModal({ afterCreateNewBoar }) {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 600,
+          // width: 600,
+          width: { xs: '400px', sm: '600px' },
           bgcolor: 'white',
           boxShadow: 24,
           borderRadius: '8px',
@@ -165,7 +166,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoar }) {
                 */}
                 <Controller
                   name="type"
-                  defaultValue={BOARD_TYPES.PUBLIC}
+                  defaultValue={BOARD_TYPES.PRIVATE}
                   control={control}
                   render={({ field }) => (
                     <RadioGroup
@@ -176,6 +177,7 @@ function SidebarCreateBoardModal({ afterCreateNewBoar }) {
                     >
                       <FormControlLabel
                         value={BOARD_TYPES.PUBLIC}
+                        disabled
                         control={<Radio size="small" />}
                         label="Public"
                         labelPlacement="start"
