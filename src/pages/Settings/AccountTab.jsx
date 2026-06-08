@@ -88,7 +88,8 @@ function AccountTab() {
       height: '100%',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      px: { xs: 2, sm: 0 } // thêm dòng này
     }}>
       <Box sx={{
         maxWidth: '1200px',
@@ -123,7 +124,7 @@ function AccountTab() {
         </Box>
 
         <form onSubmit={handleSubmit(submitChangeGeneralInformation)}>
-          <Box sx={{ width: '400px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ width: { xs: '100%', sm: '400px' }, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box>
               <TextField
                 disabled

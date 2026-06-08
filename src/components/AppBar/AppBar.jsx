@@ -26,11 +26,14 @@ import Logout from '@mui/icons-material/Logout'
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
 import { Link } from 'react-router-dom'
+import CreateBoardModal from '~/components/Modal/CreateBoardModal'
 
 // IMPORT COMPONENT PROFILES (DÙNG CHO DESKTOP)
 import Profiles from './Menu/Profiles'
 
 function AppBar() {
+  const [isCreateBoardOpen, setIsCreateBoardOpen] = React.useState(false)
+
   const [searchValue, setSearchValue] = React.useState('')
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
@@ -229,6 +232,7 @@ function AppBar() {
 
           {/* Nút Create */}
           <Button
+            onClick={() => setIsCreateBoardOpen(true)}
             variant="contained"
             size="small"
             sx={{
@@ -290,7 +294,13 @@ function AppBar() {
       </MuiAppBar>
       {renderMobileMenu}
       {renderMenu}
+
+      <CreateBoardModal
+        open={isCreateBoardOpen}
+        onClose={() => setIsCreateBoardOpen(false)}
+      />
     </Box >
+
   )
 }
 

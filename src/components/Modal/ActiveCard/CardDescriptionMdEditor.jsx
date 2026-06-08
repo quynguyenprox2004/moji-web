@@ -5,6 +5,9 @@ import rehypeSanitize from 'rehype-sanitize'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import EditNoteIcon from '@mui/icons-material/EditNote'
+// Thêm import
+import { useTheme } from '@mui/material/styles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 /**
  * Vài ví dụ Markdown từ lib
@@ -19,6 +22,10 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
   const [markdownEditMode, setMarkdownEditMode] = useState(false)
   // State xử lý giá trị markdown khi chỉnh sửa
   const [cardDescription, setCardDescription] = useState(cardDescriptionProp)
+
+  // Trong component:
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const updateCardDescription = () => {
     setMarkdownEditMode(false)
@@ -35,13 +42,13 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
               value={cardDescription}
               onChange={setCardDescription}
               previewOptions={{ rehypePlugins: [[rehypeSanitize]] }} // https://www.npmjs.com/package/@uiw/react-md-editor#security
-              height={400}
+              height={isMobile ? 250 : 400} // thấp hơn trên mobile
               preview="edit" // Có 3 giá trị để set tùy nhu cầu ['edit', 'live', 'preview']
             // hideToolbar={true}
             />
           </Box>
           <Button
-            sx={{ alignSelf: 'flex-end' }}
+            sx={{ alignSelf: { xs: 'stretch', sm: 'flex-end' } }}
             onClick={updateCardDescription}
             className="interceptor-loading"
             type="button"
@@ -53,7 +60,7 @@ function CardDescriptionMdEditor({ cardDescriptionProp, handleUpdateCardDescript
         </Box>
         : <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Button
-            sx={{ alignSelf: 'flex-end' }}
+            sx={{ alignSelf: { xs: 'stretch', sm: 'flex-end' } }}
             onClick={() => setMarkdownEditMode(true)}
             type="button"
             variant="contained"
