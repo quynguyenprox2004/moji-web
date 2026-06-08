@@ -92,9 +92,13 @@ function ActiveCard() {
   }
 
   const onUpdateCardTitle = (newTitle) => {
-    console.log(newTitle.trim())
     // Gọi API...
     callApiUpdateCard({ title: newTitle.trim() })
+  }
+
+  const onUpdateCardDescription = (newDescription) => {
+    // Gọi API...
+    callApiUpdateCard({ description: newDescription })
   }
 
   const onUploadCardCover = (event) => {
@@ -108,6 +112,10 @@ function ActiveCard() {
     reqData.append('cardCover', event.target?.files[0])
 
     // Gọi API...
+    toast.promise(
+      callApiUpdateCard(reqData).finally(() => event.target.value = ''),
+      { pending: 'Updating...' }
+    )
   }
 
   return (
@@ -170,7 +178,10 @@ function ActiveCard() {
               </Box>
 
               {/* Feature 03: Xử lý mô tả của Card */}
-              <CardDescriptionMdEditor />
+              <CardDescriptionMdEditor
+                cardDescriptionProp={activeCard?.description}
+                handleUpdateCardDescription={onUpdateCardDescription}
+              />
             </Box>
 
 
