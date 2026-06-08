@@ -41,6 +41,6 @@ export const activeCardSlice = createSlice({
 
 export const { updateCurrentActiveCard, clearCurrentActiveCard } = activeCardSlice.actions // Export các action creator để component có thể dispatch
 
-export const selectCurrentActiveCard = (state) => state.activeCard.currentActiveCard // Export selector để component có thể lấy dữ liệu từ Redux Store
+export const selectCurrentActiveCard = (state) => state.activeCard.currentActiveCard // Export selector để component bên dưới gọi bằng hook useSelector() để thể lấy dữ liệu từ Redux Store
 
 export const activeCardReducer = activeCardSlice.reducer // Export reducer để cấu hình vào Redux Store

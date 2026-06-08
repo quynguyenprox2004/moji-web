@@ -132,7 +132,7 @@ function AppBar() {
     >
       {/*  PROFILE*/}
       <MenuItem onClick={handleProfileMenuOpen} sx={{ fontSize: '0.875rem' }}>
-        <Avatar sx={{ width: 24, height: 24, mr: 2 }} src="https://trungquandev.com/wp-content/uploads/2023/05/main-avatar-circle-min-trungquandev-codetq.jpeg" />
+        <Avatar sx={{ width: 24, height: 24, mr: 2 }} src="" />
         Profile
       </MenuItem>
 
@@ -263,12 +263,9 @@ function AppBar() {
               </Badge>
             </Tooltip>
 
-
-            <Link to="/boards"> {/**Tạm fix về trang board list ở đây */}
-              <Tooltip title="Help">
-                <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'text.primary' }} />
-              </Tooltip>
-            </Link>
+            <Tooltip title="Help">
+              <HelpOutlineIcon sx={{ cursor: 'pointer', color: 'text.primary' }} />
+            </Tooltip>
 
             {/* Gọi Profiles động cấp Desktop */}
             <Profiles />

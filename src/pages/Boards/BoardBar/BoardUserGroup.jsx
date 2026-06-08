@@ -25,7 +25,7 @@ function BoardUserGroup({ boardUsers = [], limit = 5 }) {
       {[...Array(16)].map((_, index) => {
         if (index < limit) {
           return (
-            <Tooltip title="" key={index}>
+            <Tooltip title="image" key={index}>
               <Avatar
                 sx={{ width: 34, height: 34, cursor: 'pointer' }}
                 alt=""
