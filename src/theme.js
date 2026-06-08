@@ -26,6 +26,7 @@ const theme = extendTheme({
           paper: '#FFFFFF',
           appBar: '#FFFFFF',
           boardBar: '#EBF3FE',
+          boardContent: '#D8E6FD',
           columns: '#F1F2F4'
         },
         text: {
@@ -45,6 +46,7 @@ const theme = extendTheme({
           paper: '#1F1F21',
           appBar: '#1F1F21',
           boardBar: '#13223A',
+          boardContent: '#182F52',
           columns: '#101204'
         },
         text: {
