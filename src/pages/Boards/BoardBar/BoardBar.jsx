@@ -1,7 +1,7 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import DashboardIcon from '@mui/icons-material/Dashboard'
+// import DashboardIcon from '@mui/icons-material/Dashboard'
 import VpnLockIcon from '@mui/icons-material/VpnLock'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import IconButton from '@mui/material/IconButton'
@@ -10,8 +10,15 @@ import Menu from '@mui/material/Menu'
 import { capitalizeFirstLetter } from '~/utils/formatters'
 import Tooltip from '@mui/material/Tooltip'
 // Import các sub-components vừa tách
-import BoardUserGroup from './Menu/BoardUserGroup'
+import BoardUserGroup from './BoardUserGroup'
 import BoardInvite from './Menu/BoardInvite'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  selectCurrentActiveBoard,
+  updateCurrentActiveBoard
+} from '~/redux/activeBoard/activeBoardSlice'
+import { updateBoardDetailsAPI } from '~/apis'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 
 const MENU_STYLES = {
   color: 'text.primary',
@@ -27,6 +34,9 @@ const MENU_STYLES = {
 }
 
 function BoardBar({ board }) {
+  const dispatch = useDispatch()
+  const activeBoard = useSelector(selectCurrentActiveBoard)
+
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
 
@@ -68,6 +78,20 @@ function BoardBar({ board }) {
     </Menu>
   )
 
+  const onUpdateBoardTitle = async (newTitle) => {
+    const updatedBoard = await updateBoardDetailsAPI(
+      activeBoard._id,
+      {
+        title: newTitle.trim()
+      }
+    )
+
+    dispatch(updateCurrentActiveBoard({
+      ...activeBoard,
+      ...updatedBoard
+    }))
+  }
+
   return (
     <Box sx={{
       width: '100%',
@@ -82,7 +106,7 @@ function BoardBar({ board }) {
       {/* --- CỤM BÊN TRÁI: TÊN BOARD & TRẠNG THÁI --- */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 }, overflow: 'hidden' }}>
         <Tooltip title={board?.description}>
-          <Chip
+          {/* <Chip
             sx={{
               ...MENU_STYLES,
               maxWidth: { xs: '220px', sm: '320px' },
@@ -96,7 +120,13 @@ function BoardBar({ board }) {
             icon={<DashboardIcon color='text.primary' />}
             label={board?.title}
             clickable
-          />
+          /> */}
+          <Box>
+            <ToggleFocusInput
+              value={activeBoard?.title}
+              onChangedValue={onUpdateBoardTitle}
+            />
+          </Box>
         </Tooltip>
         <Chip
           sx={{ ...MENU_STYLES, minWidth: 'fit-content' }}
@@ -113,7 +143,7 @@ function BoardBar({ board }) {
         gap: 1
       }}>
         {/* Gọi gọn gàng hai Component con bằng các cấu hình tham số mặc định */}
-        <BoardUserGroup max={5} size={30} fontSize={16} />
+        <BoardUserGroup />
         <BoardInvite fullWidth={false} size="medium" />
       </Box>
 
