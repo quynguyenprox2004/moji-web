@@ -2,7 +2,7 @@ import React from 'react'
 import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import ListCards from './ListCards/ListCards'
-import Typography from '@mui/material/Typography'
+// import Typography from '@mui/material/Typography'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Divider from '@mui/material/Divider'
@@ -27,7 +27,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { useConfirm } from 'material-ui-confirm'
 import {
   createNewCardAPI,
-  deleteColumnDetailsAPI
+  deleteColumnDetailsAPI,
+  updateColumnDetailsAPI
 } from '~/apis'
 import {
   updateCurrentActiveBoard,
@@ -35,6 +36,7 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { cloneDeep } from 'lodash'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 
 
 function Column({ column }) {
@@ -138,12 +140,26 @@ function Column({ column }) {
     }).catch(() => { })
   }
 
+  const onUpdateColumnTitle = (newTitle) => {
+    // Gọi API update Column và xử lý dữ liệu Board trong redux
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find(c => c._id === column._id)
+      if (columnToUpdate) columnToUpdate.title = newTitle
+
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
+
   // Phải bọc div ở đây vì vấn đề chiều cao của column khi kéo thả sẽ ó bug kiểu flickering
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
       <Box
         {...listeners}
         sx={{
+          display: 'flex', // <--- Thêm dòng này
+          flexDirection: 'column', // <--- Thêm dòng này
+
           // Responsive Width: Trên mobile (xs) thu hẹp lại một chút để không bị kích màn hình, sm trở lên đạt kích thước chuẩn Trello
           minWidth: { xs: '270px', sm: '300px' },
           maxWidth: { xs: '270px', sm: '300px' },
@@ -173,7 +189,7 @@ function Column({ column }) {
           // justifyContent: 'space-between',
           color: 'text.primary'
         }}>
-          <Typography variant="h6"
+          {/* <Typography variant="h6"
             sx={{
               // Responsive FontSize cho tiêu đề Column
               fontSize: { xs: '0.9rem', sm: '1rem' },
@@ -185,9 +201,14 @@ function Column({ column }) {
               // bgcolor: 'rgba(0,0,0,0.3)' // đang test
             }}>
             {column?.title}
-          </Typography>
+          </Typography> */}
+          <ToggleFocusInput
+            value={column?.title}
+            onChangedValue={onUpdateColumnTitle}
+            data-no-dnd="true"
+          />
           <Box>
-            <Tooltip title="List actions">
+            <Tooltip title="">
               <IconButton
                 sx={{
                   color: 'text.primary',
@@ -269,7 +290,7 @@ function Column({ column }) {
 
         {/* Box Column Footer */}
         <Box sx={{
-          // FIX QUAN TRỌNG: Nếu đóng form thì giữ chiều cao cố định của footer, nếu mở form thì chuyển sang 'auto' để tự giãn theo nội dung
+          // Nếu đóng form thì giữ chiều cao cố định của footer, nếu mở form thì chuyển sang 'auto' để tự giãn theo nội dung
           height: !openNewCardForm ? (theme) => theme.moji.columnFooterHeight : 'auto',
           p: '10px 5px',
           mx: '5px',
@@ -288,10 +309,7 @@ function Column({ column }) {
                   flexGrow: 1,
                   justifyContent: 'flex-start',
                   textTransform: 'none',
-
-                  // Responsive font size cho nút bấm dưới chân Column
                   fontSize: { xs: '0.85rem', sm: '0.9rem' },
-
                   '&:hover': {
                     boxShadow: 'none',
                     backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
@@ -300,8 +318,9 @@ function Column({ column }) {
               >
                 Add a card
               </Button>
-              <Tooltip title="Drag to move">
+              <Tooltip title="">
                 <IconButton size="medium" sx={{
+                  cursor: 'grab',
                   color: 'text.primary',
                   borderRadius: '5px',
                   '&:hover': {
@@ -309,7 +328,7 @@ function Column({ column }) {
                     backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#2A2C21' : '#D1D3D4')
                   }
                 }} >
-                  <DragHandleIcon sx={{ cursor: 'grab' }} />
+                  <DragHandleIcon />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -319,25 +338,24 @@ function Column({ column }) {
               flexDirection: 'column',
               gap: 1
             }}>
-              {/* Ô nhập tiêu đề Card: Sử dụng multiline giống hệt Trello để viết được tiêu đề dài */}
+              {/* Ô nhập tiêu đề Card */}
               <TextField
                 placeholder="Enter a title for this card..."
                 variant="outlined"
                 size="small"
                 fullWidth
                 multiline
-                rows={2} // Mặc định hiển thị 2 dòng nhập liệu cho rộng rãi
-                autoFocus // Tự động lấy con trỏ chuột khi mở form
+                rows={1}
+                autoFocus
                 data-no-dnd="true"
                 value={newCardTitle}
                 onChange={(e) => setNewCardTitle(e.target.value)}
                 sx={{
                   '& label': { color: 'text.primary' },
-                  '& input': { color: 'text.primary' },
+                  '& textarea': { color: 'text.primary' }, // FIX BUG: Đổi từ 'input' thành 'textarea' để nhận đúng màu chữ khi dùng multiline
                   '& .MuiOutlinedInput-root': {
-                    // Đổi màu nền ô nhập giống hình dáng của một chiếc Card thực sự (Trắng ở Light Mode / Xám ở Dark Mode)
                     backgroundColor: (theme) => (theme.palette.mode === 'dark' ? '#333639' : '#fff'),
-                    '& fieldset': { borderColor: 'transparent' }, // Ẩn viền thô mặc định đi cho giống Trello
+                    '& fieldset': { borderColor: 'transparent' },
                     '&:hover fieldset': { borderColor: 'text.primary' },
                     '&.Mui-focused fieldset': { borderColor: 'text.primary' }
                   }
@@ -364,7 +382,7 @@ function Column({ column }) {
 
                 <IconButton
                   size="small"
-                  onClick={toggleOpenNewCardForm} // Bấm nút X để đóng form
+                  onClick={toggleOpenNewCardForm}
                   sx={{
                     color: 'text.primary',
                     borderRadius: '5px',

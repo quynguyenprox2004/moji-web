@@ -26,7 +26,6 @@ const theme = extendTheme({
           paper: '#FFFFFF',
           appBar: '#FFFFFF',
           boardBar: '#EBF3FE',
-          boardContent: '#DCE9FE',
           columns: '#F1F2F4'
         },
         text: {
@@ -46,7 +45,6 @@ const theme = extendTheme({
           paper: '#1F1F21',
           appBar: '#1F1F21',
           boardBar: '#13223A',
-          boardContent: '#1B2C47',
           columns: '#101204'
         },
         text: {
@@ -60,7 +58,6 @@ const theme = extendTheme({
     MuiCssBaseline: {
       styleOverrides: (theme) => ({
         body: {
-          // Cấu hình chung cho toàn bộ thanh cuộn trên trang
           '*::-webkit-scrollbar': {
             width: '6px',
             height: '6px'
@@ -94,13 +91,23 @@ const theme = extendTheme({
         })
       }
     },
-    // MuiTypography: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          '&.MuiTypography-body1': { fontSize: '0.875rem' }
+        }
+      }
+    },
+    // MuiOutlinedInput: {
     //   styleOverrides: {
     //     root: {
-    //       '&.MuiTypography-body1': { fontSize: '0.875rem' }
+    //       fontSize: '0.875rem',
+    //       '& fieldset': { borderWidth: '0.5px !important' },
+    //       '&:hover fieldset': { borderWidth: '1px !important' },
+    //       '&.Mui-focused fieldset': { borderWidth: '1px !important' }
     //     }
     //   }
-    // },
+    // }
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
@@ -109,8 +116,8 @@ const theme = extendTheme({
 
           // TỐI ƯU TOÀN DIỆN BORDER BIẾN ĐỔI THEO TEXT.PRIMARY CỦA TRELLO
           '& fieldset': {
-            borderWidth: '0.5px !important',
-            borderColor: `${theme.palette.text.primary} !important`
+            borderWidth: '1px !important',
+            borderColor: `${theme.palette.text.primary}`
           },
           '&:hover fieldset': {
             borderWidth: '1px !important',
@@ -124,6 +131,7 @@ const theme = extendTheme({
       }
     }
   }
+
   // ...other properties
 })
 
