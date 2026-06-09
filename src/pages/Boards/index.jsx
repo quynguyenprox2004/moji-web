@@ -136,7 +136,7 @@ function Boards() {
                     <Card sx={{
                       width: '100%',
                       borderRadius: '12px',
-                      border: '0.5px solid',
+                      border: '1px solid',
                       borderColor: 'divider',
                       boxShadow: 'none',
                       transition: 'border-color .15s',
@@ -177,9 +177,9 @@ function Boards() {
                             component={Link}
                             to={`/boards/${b._id}`}
                             sx={{
-                              display: 'flex', alignItems: 'center', gap: 0.3,
-                              fontSize: '12px', color: 'primary.main', textDecoration: 'none',
-                              '&:hover': { color: 'primary.dark' }
+                              display: 'flex', alignItems: 'center', gap: 0.3, fontWeight: 'bold',
+                              fontSize: '12px', color: 'text.primary', textDecoration: 'none',
+                              '&:hover': { color: 'text.secondary' }
                             }}
                           >
                             Open <ArrowRightIcon sx={{ fontSize: 16 }} />
