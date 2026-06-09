@@ -9,11 +9,11 @@ const SidebarItem = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: '8px',
   cursor: 'pointer',
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   padding: '12px 16px',
   borderRadius: '8px',
   '&:hover': {
-    backgroundColor: theme.palette.mode === 'dark' ? '#33485D' : theme.palette.grey[300]
+    backgroundColor: theme.palette.mode === 'dark' ? '#37373A' : '#DDDEDD'
   },
   '&.active': {
     color: theme.palette.mode === 'dark' ? '#90caf9' : '#0c66e4',
