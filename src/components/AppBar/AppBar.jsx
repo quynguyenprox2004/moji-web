@@ -13,10 +13,10 @@ import Divider from '@mui/material/Divider'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import SvgIcon from '@mui/material/SvgIcon'
 import { ReactComponent as MojiIcon } from '~/assets/trello.svg'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
-import SearchIcon from '@mui/icons-material/Search'
-import CloseIcon from '@mui/icons-material/Close'
+// import TextField from '@mui/material/TextField'
+// import InputAdornment from '@mui/material/InputAdornment'
+// import SearchIcon from '@mui/icons-material/Search'
+// import CloseIcon from '@mui/icons-material/Close'
 import Button from '@mui/material/Button'
 import ModeSelect from '../ModeSelect/ModeSelect'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
@@ -27,14 +27,15 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
 import Tooltip from '@mui/material/Tooltip'
 import { Link } from 'react-router-dom'
 import CreateBoardModal from '~/components/Modal/CreateBoardModal'
+import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 
 // IMPORT COMPONENT PROFILES (DÙNG CHO DESKTOP)
-import Profiles from './Menu/Profiles'
+import Profiles from './Menus/Profiles'
 
 function AppBar() {
   const [isCreateBoardOpen, setIsCreateBoardOpen] = React.useState(false)
 
-  const [searchValue, setSearchValue] = React.useState('')
+  // const [searchValue, setSearchValue] = React.useState('')
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null)
 
@@ -196,7 +197,7 @@ function AppBar() {
           </Link>
 
           {/* Ô Tìm kiếm */}
-          <TextField
+          {/* <TextField
             id="outlined-search"
             label="Search"
             type="text"
@@ -228,7 +229,9 @@ function AppBar() {
               '& label': { color: 'text.primary', fontSize: { xs: '11px', sm: '14px' } },
               '& input': { color: 'text.primary', py: '6px' }
             }}
-          />
+          /> */}
+          {/**Tìm kiếm nhanh 1 hoặc nhiều Board */}
+          <AutoCompleteSearchBoard />
 
           {/* Nút Create */}
           <Button
