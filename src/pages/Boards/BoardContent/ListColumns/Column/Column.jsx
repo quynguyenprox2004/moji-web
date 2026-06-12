@@ -65,7 +65,12 @@ function Column({ column }) {
   const orderedCards = column.cards
 
   const [openNewCardForm, setOpenNewCardForm] = React.useState(false)
-  const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
+  // const toggleOpenNewCardForm = () => setOpenNewCardForm(!openNewCardForm)
+  // Cập nhật hàm này để kiêm luôn việc reset ô nhập Card title
+  const toggleOpenNewCardForm = () => {
+    setOpenNewCardForm(!openNewCardForm)
+    setNewCardTitle('')
+  }
 
   const [newCardTitle, setNewCardTitle] = React.useState('')
 
@@ -186,7 +191,7 @@ function Column({ column }) {
           mx: '5px',
           display: 'flex',
           alignItems: 'center',
-          // justifyContent: 'space-between',
+          justifyContent: 'space-between',
           color: 'text.primary'
         }}>
           {/* <Typography variant="h6"
@@ -202,11 +207,22 @@ function Column({ column }) {
             }}>
             {column?.title}
           </Typography> */}
-          <ToggleFocusInput
-            value={column?.title}
-            onChangedValue={onUpdateColumnTitle}
-            data-no-dnd="true"
-          />
+          {/* BƯỚC 2: Bọc ToggleFocusInput vào một Box flex để nó chiếm trọn không gian trống bên trái */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              minWidth: 0,
+              mr: 1,
+              overflow: 'hidden'
+            }}
+          >
+            <ToggleFocusInput
+              value={column?.title}
+              onChangedValue={onUpdateColumnTitle}
+              data-no-dnd="true"
+              maxLines={2}
+            />
+          </Box>
           <Box>
             <Tooltip title="">
               <IconButton

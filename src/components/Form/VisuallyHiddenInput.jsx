@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles'
  * https://github.com/viclafouch/mui-file-input
  */
 const HiddenInputStyles = styled('input')({
-  display: 'none' // Docs ở trên làm css dài quá, chỉ cần display none để ẩn thẻ input file đi là đủ rồi :))
+  display: 'none' // Docs ở trên làm css dài quá, chỉ cần display none để ẩn thẻ input file đi là đủ rồi
 
   // clip: 'rect(0 0 0 0)',
   // clipPath: 'inset(50%)',

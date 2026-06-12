@@ -14,6 +14,12 @@ const theme = extendTheme({
     columnHeaderHeight: COLUMN_HEADER_HEIGHT,
     columnFooterHeight: COLUMN_FOOTER_HEIGHT
   },
+  // TỐI ƯU: Đưa font-size của body1 ra ngoài cấu hình gốc chuẩn MUI
+  typography: {
+    body1: {
+      fontSize: '0.875rem'
+    }
+  },
   colorSchemes: {
     light: {
       palette: {
@@ -64,12 +70,22 @@ const theme = extendTheme({
             width: '6px',
             height: '6px'
           },
+          // Mặc định ban đầu cho Light Mode
           '*::-webkit-scrollbar-thumb': {
-            backgroundColor: theme.palette.mode === 'dark' ? '#4d4d4d' : '#dcdde1',
+            backgroundColor: '#dcdde1',
             borderRadius: '6px'
           },
           '*::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: theme.palette.mode === 'dark' ? '#686868' : '#b2b3b8'
+            backgroundColor: '#b2b3b8'
+          },
+          // TỐI ƯU: Sử dụng selector động để tự ăn theo Dark Mode khi chuyển đổi giao diện
+          [theme.getColorSchemeSelector('dark')]: {
+            '*::-webkit-scrollbar-thumb': {
+              backgroundColor: '#4d4d4d'
+            },
+            '*::-webkit-scrollbar-thumb:hover': {
+              backgroundColor: '#686868'
+            }
           }
         }
       })
@@ -87,54 +103,36 @@ const theme = extendTheme({
       styleOverrides: {
         root: ({ theme }) => ({
           fontSize: '0.875rem',
-          // TỐI ƯU: Đảm bảo nhãn của input luôn ăn theo màu text chuẩn hệ thống, đỡ phải viết đi viết lại ở component
-          color: theme.palette.text.primary,
-          '&.Mui-focused': { color: theme.palette.text.primary }
+          // Nhãn mặc định sẽ có màu dịu nhẹ text.secondary
+          color: theme.palette.text.secondary,
+          // Khi click vào ô input, nhãn sẽ chuyển sang màu Primary (Xanh) hoặc Text Primary tùy bạn chọn tạo điểm nhấn focus
+          '&.Mui-focused': { color: theme.palette.primary.main }
         })
       }
     },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          '&.MuiTypography-body1': { fontSize: '0.875rem' }
-        }
-      }
-    },
-    // MuiOutlinedInput: {
-    //   styleOverrides: {
-    //     root: {
-    //       fontSize: '0.875rem',
-    //       '& fieldset': { borderWidth: '0.5px !important' },
-    //       '&:hover fieldset': { borderWidth: '1px !important' },
-    //       '&.Mui-focused fieldset': { borderWidth: '1px !important' }
-    //     }
-    //   }
-    // }
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
           fontSize: '0.875rem',
-          color: theme.palette.text.primary, // Đảm bảo chữ nhập vào luôn rõ ràng ở cả 2 mode
+          color: theme.palette.text.primary,
 
-          // TỐI ƯU TOÀN DIỆN BORDER BIẾN ĐỔI THEO TEXT.PRIMARY CỦA TRELLO
+          // TỐI ƯU: Loại bỏ hoàn toàn !important để có hiệu ứng chuyển đổi mượt mà (Good UX)
           '& fieldset': {
-            borderWidth: '1px !important',
-            borderColor: `${theme.palette.text.primary}`
+            borderWidth: '1px',
+            borderColor: theme.palette.text.secondary // Trạng thái bình thường: mờ nhẹ
           },
           '&:hover fieldset': {
-            borderWidth: '1px !important',
-            borderColor: `${theme.palette.text.primary} !important`
+            borderWidth: '1px',
+            borderColor: theme.palette.text.primary // Hover vào: đậm lên rõ ràng
           },
           '&.Mui-focused fieldset': {
-            borderWidth: '1px !important',
-            borderColor: `${theme.palette.text.primary} !important`
+            borderWidth: '1.5px', // Hơi dày lên một chút khi focus
+            borderColor: theme.palette.primary.main // Chuyển sang màu xanh định dạng hành động gõ chữ
           }
         })
       }
     }
   }
-
-  // ...other properties
 })
 
 export default theme

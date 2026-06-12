@@ -171,11 +171,24 @@ function BoardBar({ board }) {
             borderRadius: '4px'
           }}>
             <DashboardIcon fontSize="small" sx={{ color: 'text.primary' }} />
-            <ToggleFocusInput
-              value={board?.title}
-              onChangedValue={onUpdateBoardTitle}
-              inputFontSize="16px"
-            />
+            <Box
+              sx={{
+                flex: 1,
+                minWidth: 0,
+                maxWidth: {
+                  xs: '140px',
+                  sm: '220px',
+                  md: '320px'
+                }
+              }}
+            >
+              <ToggleFocusInput
+                value={board?.title}
+                onChangedValue={onUpdateBoardTitle}
+                inputFontSize="16px"
+                singleLine
+              />
+            </Box>
           </Box>
         </Tooltip>
 

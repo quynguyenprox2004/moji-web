@@ -7,30 +7,13 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import Grid from '@mui/material/Unstable_Grid2'
 import Stack from '@mui/material/Stack'
 import Divider from '@mui/material/Divider'
-// import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined'
-// import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined'
-// import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
-// import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined'
-// import AttachFileOutlinedIcon from '@mui/icons-material/AttachFileOutlined'
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
-// import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined'
-// import AspectRatioOutlinedIcon from '@mui/icons-material/AspectRatioOutlined'
-// import AddToDriveOutlinedIcon from '@mui/icons-material/AddToDriveOutlined'
-// import AddOutlinedIcon from '@mui/icons-material/AddOutlined'
-// import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined'
-// import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined'
-// import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined'
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined'
-// import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import SubjectRoundedIcon from '@mui/icons-material/SubjectRounded'
-// import DvrOutlinedIcon from '@mui/icons-material/DvrOutlined'
-
 import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
 import VisuallyHiddenInput from '~/components/Form/VisuallyHiddenInput'
 import { singleFileValidator } from '~/utils/validators'
 import { toast } from 'react-toastify'
-
-// import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -210,10 +193,20 @@ function ActiveCard() {
           <CreditCardIcon />
 
           {/* Feature 01: Xử lý tiêu đề của Card */}
-          <ToggleFocusInput
-            inputFontSize='20px'
-            value={activeCard?.title}
-            onChangedValue={onUpdateCardTitle} />
+          <Box
+            sx={{
+              flex: 1,
+              minWidth: 0,
+              overflow: 'hidden'
+            }}
+          >
+            <ToggleFocusInput
+              inputFontSize='20px'
+              value={activeCard?.title}
+              onChangedValue={onUpdateCardTitle}
+              maxLines={2}
+            />
+          </Box>
         </Box>
 
         <Grid container spacing={2} sx={{ mb: 3 }}>
