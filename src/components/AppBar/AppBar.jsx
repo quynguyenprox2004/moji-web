@@ -30,7 +30,7 @@ import CreateBoardModal from '~/components/Modal/CreateBoardModal'
 import AutoCompleteSearchBoard from './SearchBoards/AutoCompleteSearchBoard'
 
 // IMPORT COMPONENT PROFILES (DÙNG CHO DESKTOP)
-import Profiles from './Menu/Profiles'
+import Profiles from './Menus/Profiles'
 
 function AppBar() {
   const [isCreateBoardOpen, setIsCreateBoardOpen] = React.useState(false)

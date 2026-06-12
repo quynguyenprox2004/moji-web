@@ -32,7 +32,6 @@ import { toast } from 'react-toastify'
 
 // import CardUserGroup from './CardUserGroup'
 import CardDescriptionMdEditor from './CardDescriptionMdEditor'
-// import CardActivitySection from './CardActivitySection'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   clearCurrentActiveCard,

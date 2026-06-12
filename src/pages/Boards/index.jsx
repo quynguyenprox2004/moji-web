@@ -80,7 +80,7 @@ function Boards() {
     fetchBoardsAPI(location.search).then(updateStateData)
   }, [location.search])
 
-  const afterCreateNewBoar = () => {
+  const afterCreateNewBoard = () => {
     // Đơn giản là cứ fetch lại danh sách board tương tự trong useEffect
     fetchBoardsAPI(location.search).then(updateStateData)
   }
@@ -116,7 +116,7 @@ function Boards() {
             </Stack>
             <Divider sx={{ my: 1 }} />
             <Stack direction="column" spacing={1}>
-              <SidebarCreateBoardModal afterCreateNewBoar={afterCreateNewBoar} />
+              <SidebarCreateBoardModal afterCreateNewBoar={afterCreateNewBoard} />
             </Stack>
           </Grid>
 
