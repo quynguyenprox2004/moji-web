@@ -24,7 +24,13 @@ function ListColumns({ columns }) {
   const board = useSelector(selectCurrentActiveBoard)
 
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
-  const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
+
+  // const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
+  // Cập nhật hàm này để vừa đóng/mở form, vừa xóa dữ liệu cũ trong input
+  const toggleOpenNewColumnForm = () => {
+    setOpenNewColumnForm(!openNewColumnForm)
+    setNewColumnTitle('')
+  }
 
   const [newColumnTitle, setNewColumnTitle] = useState('')
 
